@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparsegp"
+version = "1.0.0"
+description = "Sol³ INT8 mixed-block and Sparge attention for CUDA and ROCm"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.7"]
+authors = [{name="DeepBeepMeep"}]
+
+[project.urls]
+Source = "https://github.com/deepbeepmeep/SparseGP"
+
+[tool.setuptools.packages.find]
+include = ["sparsegp*", "spas_sage_attn*"]
+
+[tool.setuptools.package-data]
+sparsegp = ["images/*.cubin", "images/*.hsaco", "csrc/*.cu"]
+"sparsegp.packed_cuda" = ["ptx/*.ptx", "ptx/route_*.json", "*.cu", "LICENSE.txt"]

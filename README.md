@@ -1,214 +1,104 @@
-# SpargeAttention
+# SparseGP
 
-## Recommended API
-We highly recommend using the `spas_sage2_attn_meansim_topk_cuda` and `block_sparse_sage2_attn_cuda` APIs. They are plug-and-play and customizable:
+**Sparse attention for the GPU Poor.** SparseGP brings Sol³ mixed-block routing with INT8 attention and SpargeAttention block masks to [WanGP](https://github.com/deepbeepmeep/Wan2GP). It ships GPU machine code for GeForce RTX 20–50 series and Radeon RDNA 3/4. The same wheel runs on Windows and Linux.
 
-### Plug-and-Play API
-```python
-from spas_sage_attn import spas_sage2_attn_meansim_topk_cuda
+The fork is based on [SpargeAttention](https://github.com/thu-ml/SpargeAttn). Its original documentation, paper and citation are preserved in [README_SpargeAttention.md](README_SpargeAttention.md). The hierarchical routing method comes from [Sol³ by Fan and coauthors](https://github.com/FofGofx/sol3). WanGP contributed the packed INT8 and NVFP4 paths.
 
-attn_output = spas_sage2_attn_meansim_topk_cuda(q, k, v, topk=0.5, is_causal=False)
-```
-You can adjust `topk` to balance between attention accuracy (higher `topk` is more accurate) and sparsity (lower `topk` is more sparse). 
+## Attention modes
 
+| Mode | Inputs | Behavior |
+|---|---|---|
+| `sol3_attention(q, k, v)` | NHD, bidirectional self-attention, FP16 or BF16, head widths 64 and 128, at least 1,024 tokens | INT8 scores. Important blocks keep all keys. Mixed blocks keep selected keys. Each remaining block contributes its mean key and value with the mass of its remaining tokens. |
+| `sol3_attention(..., precision="fp4")` | SM120, eligible BF16 width-128 inputs, CUDA 13 class driver with PyTorch's image loader | NVFP4 scores and FP8 values with the same routing. INT8 is the default. |
+| `sparge_attention(q, k, v, block_map)` | HND, boolean or 0/1 block map | Attend to the keys allowed by the map. Supports causal masking, rectangular attention and partial final blocks. An empty row returns zero. |
+| `spas_sage2_attn_meansim_topk_cuda(...)` | Original SpargeAttention layout and selection arguments | Builds the block map from pooled scores and within-block similarity. The CDF variant is also available. |
 
-### Customize your Block-Sparse Mask
+For Sol³, a protected prefix or suffix receives dense attention and its key blocks remain exact. Short sequences and incompatible shapes use dense attention. A dense Sparge call uses [SageGP](https://github.com/deepbeepmeep/SageGP) when its kernel supports the call. PyTorch SDPA handles other dense requests, including explicit token masks. With an explicit block map SparseGP preserves the map even if the fast operator cannot serve the shape.
 
-```python
-from spas_sage_attn import block_sparse_sage2_attn_cuda
+### Measured
 
-attn_output = block_sparse_sage2_attn_cuda(q, k, v, mask_id=None):
-```
+On the Wan 2.2 I2V singer clip, SparseGP Sol3 INT8 took **13.99 seconds** over four transformer steps. Sage2 took **15.10 seconds**, upstream Sol³ BF16 took **14.05 seconds**, and the existing Sol INT8 path took **12.56 seconds**. All four used the same seed, conditioning image, model, sampler and lossless output.
 
-In this API, we **support computing attention in any block sparse mask per attention head**. Specifically, the per-head attention mask `mask_id` has shape `(batch_size, num_heads, ⌈seq_len / 128⌉, ⌈seq_len // 64⌉)` and consists of `0` and `1`. Currently, the block size is 128×64.
+| Wan 2.2 I2V, 832 × 480, 81 frames | Stone ring LPIPS | Singer LPIPS | Singer transformer time |
+|---|---:|---:|---:|
+| Sage2 reference | 0 | 0 | 15.10 s |
+| Sol INT8 | 0.0159 | 0.0570 | 12.56 s |
+| Sol FP4 | 0.0182 | 0.0607 | 12.38 s |
+| Upstream Sol³ BF16 | 0.0135 | 0.0639 | 14.05 s |
+| SparseGP Sol3 INT8 | 0.0105 | 0.0422 | 13.99 s |
+| SparseGP Sol3 FP4 | 0.0149 | 0.0494 | 13.60 s |
 
----
-The official implementation of [SpargeAttn](https://arxiv.org/abs/2502.18137), a universal training-free sparse attention accelerating language, image, and video models.
+| MiniMax H3, 1280 × 704, 124 frames | Clockmaker LPIPS | Fox LPIPS | Fox transformer time |
+|---|---:|---:|---:|
+| Sage2 reference | 0.0000 | 0.0000 | 31.32 s |
+| Sol INT8 | 0.3867 | 0.2847 | 24.10 s |
+| Sol FP4 | 0.3816 | 0.2901 | 23.58 s |
+| Upstream Sol³ BF16 | 0.2756 | 0.2715 | 30.88 s |
+| SparseGP Sol3 INT8 | 0.2776 | 0.2444 | 29.26 s |
+| SparseGP Sol3 FP4 | 0.3057 | 0.3014 | 28.10 s |
 
-<div align="center"> <h2>SpargeAttention: Accurate and Training-free Sparse Attention<br>Accelerating Any Model Inference</h2> <a href="https://huggingface.co/papers/2502.18137"> <img src="https://img.shields.io/static/v1?label=Daily%20papers&message=HuggingFace&color=yellow" alt="Daily papers: HuggingFace"> </a> <a href="https://arxiv.org/abs/2502.18137"> <img src="https://img.shields.io/badge/arXiv-2502.18137-b31b1b.svg" alt="arXiv:2502.18137"> </a> </div> 
+H3 used six denoising steps with the same dense decoder for every method. The larger perceptual distances on H3 show how strongly the model and scene affect the result.
 
-<div align="center">
-    <a href="https://jt-zhang.github.io/" target="_blank">Jintao Zhang</a><sup></sup> | 
-    <a href="https://xiang-cd.github.io/cv" target="_blank">Chendong Xiang</a><sup></sup> | 
-    <a href="https://github.com/jason-huang03" target="_blank">Haofeng Huang</a><sup></sup> | 
-    <a href="https://haochengxi.github.io/" target="_blank">Haocheng Xi</a><sup></sup> |
-    <a href="" target="_blank">Jia Wei</a><sup></sup> | 
-    <a href="https://ml.cs.tsinghua.edu.cn/~jun/index.shtml" target="_blank">Jun Zhu</a><sup></sup> |
-    <a href="https://ml.cs.tsinghua.edu.cn/~jianfei" target="_blank">Jianfei Chen</a><sup></sup>
-</div>
-
-<!-- Jintao Zhang, Chendong Xiang, Haofeng Huang, Haocheng Xi, Jia Wei, Jun Zhu, Jianfei Chen -->
-
-<br>
-
-<p align="center">
-<img src="./assets/speed_comparison.png" width="81%" alt="speed comparison.">
-</p>
-
-<p align="center">
-<img src="./assets/overview.png" width="90%" alt="overview.">
-</p>
-
-## Project Updates
-- **Please use the `spas_sage2_attn_meansim_topk_cuda` and `block_sparse_sage2_attn_cuda` APIs.**
-- [2025-07]: Release a Triton Kernel example. 
-- [2025-06]: SpargeAttn based on [SageAttention2++](https://arxiv.org/abs/2505.21136) is released.
-- [2025-05]: Add a **very simple usage without tuning or calibration**: `o = spas_sage2_attn_meansim_topk_cuda(q, k, v)`.
-- [2025-05]: 🎉SpargeAttn and [SageAttention2](https://github.com/thu-ml/SageAttention) are accepted by ICML 2025!
-- [2025-03] Support high acceleration on more GPUs, e.g., H100.
+LPIPS measures distance from the Sage2 clip. Lower values indicate closer agreement. The measurements use every sixth decoded frame at 448 pixels wide. Timings sum synchronized transformer calls from one generation per cell on SM120 and exclude text encoding, VAE decoding and file output. The complete [per-scene timing and quality results](https://github.com/deepbeepmeep/SparseGP/releases/download/v1.0.0/benchmarks.json) include SSIM, RGB PSNR and individual step times.
 
 ## Installation
-### Base environment
-+ `python>=3.9`   , `torch>=2.3.0`
-- `CUDA`:
-  + `>=12.8` for Blackwell, `>=12.4` for fp8 support on Ada, `>=12.3` for fp8 support on Hopper, `>=12.0` for Ampere
 
+Install the PyTorch build for your GPU first. The release wheel contains device-code images and has no native Python extension. It supports the WanGP stacks below.
 
-### Install Package
+| Platform | Python and PyTorch | Native images |
+|---|---|---|
+| Windows or Linux x86-64, NVIDIA | Python 3.10 / PyTorch 2.7.1 CUDA 12.8, or Python 3.11 / PyTorch 2.10 CUDA 13 | SM75, SM80, SM86, SM87, SM89, SM90, SM100, SM120, SM121 |
+| Windows or Linux x86-64, AMD | Python 3.12 / PyTorch 2.13 ROCm 10 (TheRock) | gfx1100, gfx1101, gfx1102, gfx1103, gfx1150, gfx1151, gfx1200, gfx1201; Instinct gfx908, gfx90a, gfx942, gfx950 |
 
-```bash
-pip install ninja   # for parallel compilation
-python setup.py install   # or pip install -e .
+If migrating from SpargeAttention, uninstall its distribution before installing SparseGP. Both provide the `spas_sage_attn` import.
+
+```shell
+python -m pip uninstall -y spas-sage-attn
+python -m pip install https://github.com/deepbeepmeep/SparseGP/releases/download/v1.0.0/sparsegp-1.0.0-py3-none-any.whl
 ```
 
+The CUDA and HIP paths run without Triton, including the packed Ada and Blackwell router shipped as device code. If a native image cannot load, SparseGP uses its optimized tiled INT8 Triton kernel when the installed compiler supports the GPU. Blackwell requires Triton 3.3 or later for this fallback. On Turing and RDNA 2 the fallback uses packed four-byte integer dot products. Check the actual selection with `backend_for(torch.device("cuda", 0))`. CUDA and HIP both use PyTorch's `cuda` device name.
 
-## Available API
-- `spas_sage2_attn_meansim_topk_cuda`: SpargeAttn based on [SageAttention2](https://github.com/thu-ml/SageAttention) that **we recommend using.**
+The source tree includes the compiled images.
 
-- `spas_sage2_attn_meansim_cuda`: SpargeAttn based on [SageAttention2](https://github.com/thu-ml/SageAttention) that we do not recommend.
+```shell
+git clone https://github.com/deepbeepmeep/SparseGP
+cd SparseGP
+python -m pip install .
+```
 
-- `spas_sage_attn_meansim_topk_cuda`: SpargeAttn based on [SageAttention](https://github.com/thu-ml/SageAttention) that **we recommend using.**
-
-- `spas_sage_attn_meansim_cuda`: SpargeAttn based on [SageAttention](https://github.com/thu-ml/SageAttention) that we do not recommend.
-
-
+Use `tools/build_images.py` to rebuild the native CUDA images with NVCC or the HIP images with ROCm Clang and rocWMMA. Rebuild the packed matmuls with `sparsegp/packed_cuda/build.py` and their router images with `python tools/build_packed_router.py 89 120` using Triton 3.6.
 
 ## Usage
-### Plug-and-Play Usage
-Just replace `torch.nn.functional.scaled_dot_product_attention` API using `spas_sage2_attn_meansim_topk_cuda`:
-```diff
-from spas_sage_attn import spas_sage2_attn_meansim_topk_cuda
-
-- attn_output = torch.nn.functional.scaled_dot_product_attention(q, k, v, is_causal=False)  # is_causal can be True
-
-+ attn_output = spas_sage2_attn_meansim_topk_cuda(q, k, v, topk=0.5, is_causal=False) # is_causal can be True
-```
-
-
-## Plug-and-Play API
-```python
-from spas_sage_attn import spas_sage2_attn_meansim_topk_cuda
-
-attn_output = spas_sage2_attn_meansim_topk_cuda(q, k, v, topk=0.5, is_causal=False)
-```
-You can adjust `topk` to balance between attention accuracy (higher `topk` is more accurate) and sparsity (lower `topk` is more sparse). 
-
-
-## Customize your Block-Sparse Mask API
 
 ```python
-from spas_sage_attn import block_sparse_sage2_attn_cuda
+import torch
+from sparsegp import backend_for, sol3_attention, sparge_attention
 
-attn_output = block_sparse_sage2_attn_cuda(q, k, v, mask_id=None):
+device = torch.device("cuda", 0)
+print(backend_for(device))
+
+with torch.inference_mode():
+    q, k, v = [torch.randn(1, 4097, 4, 128, device=device, dtype=torch.float16) for _ in range(3)]
+    video = sol3_attention(q, k, v, prefix_tokens=37)
+
+    qh, kh, vh = (x.transpose(1, 2) for x in (q, k, v))
+    # Each entry controls 128 queries by 64 keys, including boundary tiles.
+    keep = torch.ones(1, 4, 33, 65, dtype=torch.bool, device=device)
+    keep[:, :, :, 1::2] = False
+    sparse = sparge_attention(qh, kh, vh, keep)
 ```
 
-In this API, we **support computing attention for any block-sparse mask per attention head**. Specifically, the per-head attention mask `mask_id` has shape `(batch_size, num_heads, ⌈seq_len / 128⌉, ⌈seq_len // 64⌉)` and consists of `0` and `1`. Currently, the block size is 128×64.
+WanGP uses a quality-oriented routing threshold of `tau=0.8`. The standalone Python function defaults to `tau=1.9`. Lower thresholds retain more full key blocks. In WanGP select **Sol3** in **Configuration → Performance → Attention Type**, or select it for one generation in its attention override. Conditioning and VAE decoding use dense attention. The precision option runs the entire first denoising step and the first transformer block on subsequent steps in the available default dense mode. FlashVSR uses SparseGP for its existing Sparge block maps.
 
-<!-- 
-### CogVideoX
+## How it works
 
-Tuning:  
-```bash
-# sequential tuning
-python evaluate/cogvideo_example.py  --use_spas_sage_attn --model_out_path evaluate/models_dict/CogVideoX-2b_0.06_0.07.pt --tune
+The router pools groups of 64 tokens. Block relevance selects full blocks. Estimated approximation error, using key variation and value dispersion, selects mixed blocks. Token scores within the mixed blocks are compared with a threshold derived from that query block's mixed-token score distribution. Neighboring blocks and requested conditioning keys remain exact. Selected and representative terms participate in one softmax, with the valid tail length included in the representative mass.
 
-# parallel tuning, this will use all gpu available on the machine 
-python evaluate/cogvideo_example.py  --use_spas_sage_attn --model_out_path evaluate/models_dict/CogVideoX-2b_0.06_0.07.pt --tune --parallel_tune
-```
+The portable CUDA/HIP kernel uses warp or wave matrix instructions for INT8 QK and FP16 PV, with INT32 and FP32 accumulators respectively. It skips empty key tiles before reading keys and values, and accumulates the output with an online softmax. Ada/Blackwell also have a packed BF16-input path for 128 channels with FP8 PV. The Triton fallback skips empty tiles, implements the same token masks and representative weighting, and JIT-compiles for the active GPU. Sparge's portable path accumulates every selected PV term. The original CUDA implementation's optional additional PV pruning is specific to that implementation.
 
-Inference:  
-```bash
-# `--compile` is optional and will slow the first time inference.
-python evaluate/cogvideo_example.py  --use_spas_sage_attn --model_out_path evaluate/models_dict/CogVideoX-2b_0.06_0.07.pt --compile
-```
+Run `python tools/validate_gpu.py --target gfx1201 --triton` (substitute the actual architecture) to check masked values, mixed blocks, current-stream operation, CUDA/HIP graph replay and timing. The public release notes distinguish hardware execution from cross-compilation.
 
-> **Note:**
-We provide pre-tuned hyper-parameters `CogVideoX-2b_0.06_0.07.pt` that allow running the inference script directly. However, for better performance in both speed and quality, we recommend re-tuning because the provided hyper-parameters are tuned with SpargeAttn based on SageAttention, whereas the default API is based on SageAttention2 now.
+## License and attribution
 
-> **Note:**
-`--compile` is optional and will further accelerate video generation but bring an overhead for the first video generation.
-
-### LLama
-The tuning and inference usage is similar to CogVideoX.
-
-### Supported models
-Here’s a list of the tuned models so far, go to [hugginface](https://huggingface.co/Xiang-cd/sparge-attention-model-zoo) to see all tuned ckpt. 
-Our approach is universal, and we warmly welcome contributions! Feel free to submit a pull request to support more models. 🚀
-
-| model name | example script | tuned ckpt |
-| ---- | ---- | ---- |
-| CogVideoX-2b | evaluate/cogvideo_example.py | [link](https://huggingface.co/Xiang-cd/sparge-attention-model-zoo/blob/main/cogvideox-2b/CogVideoX-2b_0.06_0.07.pt)
-| want2v-1.3B  | evaluate/wan_example.py | [link](https://huggingface.co/Xiang-cd/sparge-attention-model-zoo/tree/main/want2v-1.3B)
-| Flux  | evaluate/flux_example.py  | TBD 
-
--->
-
-<!-- 
-## Performance
-![Local Image](./assets/exp_table.png)
-> **Note:** All experiments in the above Table and our paper used SpargeAttn based on SageAttention. An updated implementation based on SageAttention2, is available now. **It further offers a 30% speedup.**
-<br>
-
-
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="./assets/more_mochi_example.png" width="55%" alt="End-to-end video generation on Mochi.">
-      <br>
-      The quality of video generation on Mochi.
-    </td>
-    <td align="center">
-      <img src="./assets/niah128k.png" width="100%" alt="End-to-end performance of NIAH.">
-      <br>
-      End-to-end performance of NIAH.
-    </td>
-  </tr>
-</table>
--->
-
-<!-- <img src="./assets/visible_image.png" width="80%" alt="image generation."> -->
-
-
-
-## Citation
-
-```
-@inproceedings{zhang2025spargeattn,
-  title={Spargeattn: Accurate sparse attention accelerating any model inference},
-  author={Zhang, Jintao and Xiang, Chendong and Huang, Haofeng and Wei, Jia and Xi, Haocheng and Zhu, Jun and Chen, Jianfei},
-  booktitle={International Conference on Machine Learning (ICML)},
-  year={2025}
-}
-
-@article{zhang2026spargeattention2,
-  title={SpargeAttention2: Trainable Sparse Attention via Hybrid Top-k+ Top-p Masking and Distillation Fine-Tuning},
-  author={Zhang, Jintao and Jiang, Kai and Xiang, Chendong and Feng, Weiqi and Hu, Yuezhou and Xi, Haocheng and Chen, Jianfei and Zhu, Jun},
-  journal={arXiv preprint arXiv:2602.13515},
-  year={2026}
-}
-
-@inproceedings{zhang2025sageattention,
-  title={SageAttention: Accurate 8-Bit Attention for Plug-and-play Inference Acceleration}, 
-  author={Zhang, Jintao and Wei, Jia and Zhang, Pengle and Zhu, Jun and Chen, Jianfei},
-  booktitle={International Conference on Learning Representations (ICLR)},
-  year={2025}
-}
-
-@inproceedings{zhang2024sageattention2,
-  title={Sageattention2: Efficient attention with thorough outlier smoothing and per-thread int4 quantization},
-  author={Zhang, Jintao and Huang, Haofeng and Zhang, Pengle and Wei, Jia and Zhu, Jun and Chen, Jianfei},
-  booktitle={International Conference on Machine Learning (ICML)},
-  year={2025}
-}
-```
+The original SpargeAttention source and the new portable SparseGP kernels use the [Apache License 2.0](LICENSE). The packed kernels retain the [WanGP Community License 2.0](sparsegp/packed_cuda/LICENSE.txt). See [NOTICE](NOTICE) for provenance. Please cite the original [SpargeAttention](README_SpargeAttention.md) and [Sol³](https://github.com/FofGofx/sol3) papers when using their methods.

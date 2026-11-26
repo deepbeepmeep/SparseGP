@@ -1,0 +1,4 @@
+include README_SpargeAttention.md LICENSE NOTICE setup_upstream.py
+graft csrc
+graft Triton_SpargeAttn
+include tools/build_images.py tools/build_packed_router.py tools/validate_gpu.py

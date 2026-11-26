@@ -1,5 +1,6 @@
 __pycache__
-spas_sage_attn.egg-info
+*.egg-info
+.ruff_cache
 *.pkl
 /dist
 /build
