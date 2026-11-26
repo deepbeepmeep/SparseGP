@@ -29,34 +29,35 @@ def _pool(X, OUT, T, N, ST, SH, KIND: tl.constexpr):
 
 @triton.jit
 def _classify(Q, KC, VAR, DISP, MEAN, BETWEEN, AVG_VAR, AVG_DISP, FLAGS,
-              N, SCALE, TAU, SINK0, SINK1, BQ: tl.constexpr, BK: tl.constexpr):
+              N, SCALE, TAU, SINK0, SINK1, RATIO, BQ: tl.constexpr, BK: tl.constexpr):
     SCALE = SCALE.to(tl.float32)
     TAU = TAU.to(tl.float32)
     qi = tl.program_id(0) * BQ + tl.arange(0, BQ)
     ki = tl.program_id(1) * BK + tl.arange(0, BK)
     head = tl.program_id(2)
+    kv = head // RATIO
     d = tl.arange(0, 128)
     q = tl.load(Q + (head * N + qi[:, None]) * 128 + d[None, :], qi[:, None] < N, 0)
-    k = tl.load(KC + (head * N + ki[:, None]) * 128 + d[None, :], ki[:, None] < N, 0).to(tl.float32)
-    kvar = tl.load(VAR + (head * N + ki[:, None]) * 128 + d[None, :], ki[:, None] < N, 0)
-    disp = tl.load(DISP + head * N + ki, ki < N, 0)
+    k = tl.load(KC + (kv * N + ki[:, None]) * 128 + d[None, :], ki[:, None] < N, 0).to(tl.float32)
+    kvar = tl.load(VAR + (kv * N + ki[:, None]) * 128 + d[None, :], ki[:, None] < N, 0)
+    disp = tl.load(DISP + kv * N + ki, ki < N, 0)
     s = SCALE * 1.4426950408889634
     proxy = tl.dot(q, tl.trans(k), input_precision="tf32x3") * s
     q2 = q * q
-    mu = tl.sum(q * tl.load(MEAN + head * 128 + d)[None, :], 1) * s
-    var = tl.sum(q2 * tl.load(BETWEEN + head * 128 + d)[None, :], 1) * (s * s)
+    mu = tl.sum(q * tl.load(MEAN + kv * 128 + d)[None, :], 1) * s
+    var = tl.sum(q2 * tl.load(BETWEEN + kv * 128 + d)[None, :], 1) * (s * s)
     full = (proxy > (mu + TAU * tl.sqrt(var + 1.e-6))[:, None]) | (tl.abs(qi[:, None] - ki[None, :]) <= 1)
     full |= ((ki >= SINK0) & (ki < SINK1))[None, :]
     fac = 0.5 * SCALE * SCALE * 1.4426950408889634
     risk = proxy + disp[None, :] + fac * tl.dot(q2, tl.trans(kvar), input_precision="tf32x3")
     # For beta2=0 and uncapped diagonal variance, the row's mean risk is linear in the block statistics.
-    cut = mu + tl.load(AVG_DISP + head) + fac * tl.sum(q2 * tl.load(AVG_VAR + head * 128 + d)[None, :], 1)
+    cut = mu + tl.load(AVG_DISP + kv) + fac * tl.sum(q2 * tl.load(AVG_VAR + kv * 128 + d)[None, :], 1)
     flags = tl.where(full, -1, (risk >= cut[:, None]).to(tl.int32))
     tl.store(FLAGS + (head * N + qi[:, None]) * N + ki[None, :], flags, (qi[:, None] < N) & (ki[None, :] < N))
 
 
 @triton.jit
-def _tokens(Q, K, FLAGS, PARTIAL, CUT, BITS, T, N, NT, ST, SH, SCALE,
+def _tokens(Q, K, FLAGS, PARTIAL, CUT, BITS, T, N, NT, ST, SH, SCALE, RATIO,
             SELECT: tl.constexpr, BQ: tl.constexpr, BK: tl.constexpr):
     SCALE = SCALE.to(tl.float32)
     qi = tl.program_id(0) * BQ + tl.arange(0, BQ)
@@ -72,7 +73,7 @@ def _tokens(Q, K, FLAGS, PARTIAL, CUT, BITS, T, N, NT, ST, SH, SCALE,
     if tl.sum(tl.sum((flags == 1).to(tl.int32), 1), 0) > 0:
         d = tl.arange(0, 128)
         q = tl.load(Q + row[:, None] * 128 + d[None, :], qi[:, None] < N, 0).to(tl.bfloat16)
-        k = tl.load(K + head * SH + keys[:, None].to(tl.int64) * ST + d[None, :], keys[:, None] < T, 0)
+        k = tl.load(K + (head // RATIO) * SH + keys[:, None].to(tl.int64) * ST + d[None, :], keys[:, None] < T, 0)
         score = tl.dot(q, tl.trans(k)) * (SCALE * 1.4426950408889634)
     if SELECT:
         cut = tl.load(CUT + row, qi < N, float("inf"))

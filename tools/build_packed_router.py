@@ -55,14 +55,14 @@ for arch in args.architectures:
     build(
         "classify",
         kernels._classify,
-        "*fp32 *bf16 *fp32 *fp32 *fp32 *fp32 *fp32 *fp32 *i8 i32 fp64 fp64 i32 i32",
+        "*fp32 *bf16 *fp32 *fp32 *fp32 *fp32 *fp32 *fp32 *i8 i32 fp64 fp64 i32 i32 i32",
         {"BQ": 16, "BK": 64},
     )
     for phase, name in ((False, "moments"), (True, "select")):
         build(
             name,
             kernels._tokens,
-            "*fp32 *bf16 *i8 *fp32 *fp32 *i64 i32 i32 i32 i32 i32 fp64",
+            "*fp32 *bf16 *i8 *fp32 *fp32 *i64 i32 i32 i32 i32 i32 fp64 i32",
             {"SELECT": phase, "BQ": 32, "BK": 256},
             stages=2,
         )

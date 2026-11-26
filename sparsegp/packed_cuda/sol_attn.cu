@@ -181,7 +181,8 @@ extern "C" __global__ void KERNEL_NAME(
     int T, int H, int NB, int q_token_bytes, int q_head_bytes, int o_token_bytes, int o_head_bytes, int first_block) {
   extern __shared__ __align__(16) char smem[];
   const int tid = threadIdx.x, lane = tid & 31, warp = tid >> 5;
-  const int qb = blockIdx.x + first_block, head = blockIdx.y;
+  const int qb = blockIdx.x + first_block, kv = blockIdx.y;
+  const int head = kv * gridDim.z + blockIdx.z;
 #if MIXED_ROUTING
   const auto* selected = ROUTE + (static_cast<int64_t>(head) * NB + qb) * NB;
 #endif
@@ -232,8 +233,8 @@ extern "C" __global__ void KERNEL_NAME(
   }
   float threshold_sum;  // routing threshold of the sum of a centroid's scores over the query rows
   {
-    const float* mean = KC_MEAN + head * D;
-    const float* var = KC_VAR + head * D;
+    const float* mean = KC_MEAN + kv * D;
+    const float* var = KC_VAR + kv * D;
     float m = 0.f, v = 0.f;
     for (int d = 0; d < D; ++d) {
       const float c = stash[d];
@@ -308,8 +309,8 @@ extern "C" __global__ void KERNEL_NAME(
   float D0 = 0.f, D1 = 0.f, F0 = 0.f, F1 = 0.f;   // sums of their exact probabilities, now and at the last flush
   float A0 = 0.f, A1 = 0.f;                       // sums of their centroid probabilities, times 64
 
-  const char* kv_head = KV + static_cast<int64_t>(head) * NB * KV_RECORD;
-  const char* c_head = C + static_cast<int64_t>(head) * groups * C_RECORD;
+  const char* kv_head = KV + static_cast<int64_t>(kv) * NB * KV_RECORD;
+  const char* c_head = C + static_cast<int64_t>(kv) * groups * C_RECORD;
   uint32_t uses[3] = {0u, 0u, 0u};  // completed fetches into each buffer (the phases of their barriers)
   // Fetch a record into a buffer (slot 0, 1: K / V, 2: centroids). Every thread calls request and await in the same order.
   auto request = [&](int slot, const char* record, bool valid) {
@@ -626,7 +627,7 @@ extern "C" __global__ void KERNEL_NAME(
   // ---- normalize and store
   flush();
   const float inv0 = 1.f / (A0 + D0), inv1 = 1.f / (A1 + D1);
-  const float* vscale = VSCALE + head * D;
+  const float* vscale = VSCALE + kv * D;
   char* out0 = O + static_cast<int64_t>(head) * o_head_bytes + static_cast<int64_t>(q0 + row0) * o_token_bytes;
   char* out1 = O + static_cast<int64_t>(head) * o_head_bytes + static_cast<int64_t>(q0 + row1) * o_token_bytes;
   #pragma unroll

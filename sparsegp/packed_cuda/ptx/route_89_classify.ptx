@@ -26,14 +26,15 @@
 	.param .f64 _classify_param_11,
 	.param .u32 _classify_param_12,
 	.param .u32 _classify_param_13,
-	.param .u64 .ptr .global .align 1 _classify_param_14,
-	.param .u64 .ptr .global .align 1 _classify_param_15
+	.param .u32 _classify_param_14,
+	.param .u64 .ptr .global .align 1 _classify_param_15,
+	.param .u64 .ptr .global .align 1 _classify_param_16
 )
 .reqntid 128
 {
 	.reg .pred 	%p<86>;
 	.reg .b16 	%rs<73>;
-	.reg .b32 	%r<1588>;
+	.reg .b32 	%r<1591>;
 	.reg .b64 	%rd<102>;
 	.loc	1 31 0                          // router_kernels.py:31:0
 $L__func_begin0:
@@ -76,63 +77,66 @@ $L__tmp0:
 	mov.u32 	%r936, %ctaid.y;
 	.loc	1 36 28                         // router_kernels.py:36:28
 	shl.b32 	%r937, %r936, 6;
+	ld.param.b32 	%r938, [_classify_param_14];
 	.loc	1 36 46                         // router_kernels.py:36:46
-	and.b32 	%r938, %r924, 112;
-	bfe.u32 	%r939, %r924, 4, 3;
-	and.b32 	%r940, %r924, 3;
-	shl.b32 	%r941, %r940, 1;
-	shr.u32 	%r942, %r926, 2;
-	or.b32 	%r943, %r941, %r942;
+	and.b32 	%r939, %r924, 112;
+	bfe.u32 	%r940, %r924, 4, 3;
+	and.b32 	%r941, %r924, 3;
+	shl.b32 	%r942, %r941, 1;
+	shr.u32 	%r943, %r926, 2;
+	or.b32 	%r944, %r942, %r943;
 	.loc	1 36 33                         // router_kernels.py:36:33
-	or.b32 	%r944, %r939, %r937;
-	or.b32 	%r945, %r944, 8;
-	or.b32 	%r946, %r944, 16;
-	or.b32 	%r947, %r944, 24;
-	or.b32 	%r948, %r944, 32;
-	or.b32 	%r949, %r944, 40;
-	or.b32 	%r950, %r944, 48;
-	or.b32 	%r951, %r944, 56;
-	or.b32 	%r952, %r943, %r937;
-	or.b32 	%r953, %r952, 1;
-	or.b32 	%r954, %r952, 32;
-	or.b32 	%r955, %r952, 33;
+	or.b32 	%r945, %r940, %r937;
+	or.b32 	%r946, %r945, 8;
+	or.b32 	%r947, %r945, 16;
+	or.b32 	%r948, %r945, 24;
+	or.b32 	%r949, %r945, 32;
+	or.b32 	%r950, %r945, 40;
+	or.b32 	%r951, %r945, 48;
+	or.b32 	%r952, %r945, 56;
+	or.b32 	%r953, %r944, %r937;
+	or.b32 	%r954, %r953, 1;
+	or.b32 	%r955, %r953, 32;
+	or.b32 	%r956, %r953, 33;
 	.loc	1 37 25                         // router_kernels.py:37:25
-	mov.u32 	%r956, %ctaid.z;
-	.loc	1 39 28                         // router_kernels.py:39:28
-	mul.lo.s32 	%r957, %r930, %r956;
-	.loc	1 39 32                         // router_kernels.py:39:32
-	add.s32 	%r958, %r957, %r929;
-	add.s32 	%r959, %r957, %r931;
-	add.s32 	%r960, %r957, %r932;
-	add.s32 	%r961, %r957, %r933;
-	.loc	1 39 47                         // router_kernels.py:39:47
-	shl.b32 	%r962, %r958, 7;
-	shl.b32 	%r963, %r959, 7;
+	mov.u32 	%r957, %ctaid.z;
+	.loc	1 38 17                         // router_kernels.py:38:17
+	div.s32 	%r958, %r957, %r938;
+	.loc	1 40 28                         // router_kernels.py:40:28
+	mul.lo.s32 	%r959, %r930, %r957;
+	.loc	1 40 32                         // router_kernels.py:40:32
+	add.s32 	%r960, %r959, %r929;
+	add.s32 	%r961, %r959, %r931;
+	add.s32 	%r962, %r959, %r932;
+	add.s32 	%r963, %r959, %r933;
+	.loc	1 40 47                         // router_kernels.py:40:47
 	shl.b32 	%r964, %r960, 7;
 	shl.b32 	%r965, %r961, 7;
-	.loc	1 39 20                         // router_kernels.py:39:20
-	mad.wide.s32 	%rd56, %r962, 4, %rd45;
-	mad.wide.s32 	%rd57, %r963, 4, %rd45;
-	mad.wide.s32 	%rd58, %r964, 4, %rd45;
-	mad.wide.s32 	%rd59, %r965, 4, %rd45;
-	.loc	1 39 55                         // router_kernels.py:39:55
-	shl.b32 	%r966, %r924, 2;
-	and.b32 	%r967, %r966, 124;
-	and.b32 	%r968, %r924, 15;
-	shl.b32 	%r969, %r968, 3;
-	.loc	1 39 53                         // router_kernels.py:39:53
-	mul.wide.u32 	%rd60, %r967, 4;
+	shl.b32 	%r966, %r962, 7;
+	shl.b32 	%r967, %r963, 7;
+	.loc	1 40 20                         // router_kernels.py:40:20
+	mad.wide.s32 	%rd56, %r964, 4, %rd45;
+	mad.wide.s32 	%rd57, %r965, 4, %rd45;
+	mad.wide.s32 	%rd58, %r966, 4, %rd45;
+	mad.wide.s32 	%rd59, %r967, 4, %rd45;
+	.loc	1 40 55                         // router_kernels.py:40:55
+	shl.b32 	%r968, %r924, 2;
+	and.b32 	%r969, %r968, 124;
+	and.b32 	%r970, %r924, 15;
+	shl.b32 	%r971, %r970, 3;
+	.loc	1 40 53                         // router_kernels.py:40:53
+	mul.wide.u32 	%rd60, %r969, 4;
 	add.s64 	%rd1, %rd56, %rd60;
 	add.s64 	%rd2, %rd57, %rd60;
 	add.s64 	%rd3, %rd58, %rd60;
 	add.s64 	%rd4, %rd59, %rd60;
-	.loc	1 39 79                         // router_kernels.py:39:79
+	.loc	1 40 79                         // router_kernels.py:40:79
 	setp.lt.s32 	%p1, %r929, %r930;
 	setp.lt.s32 	%p2, %r931, %r930;
 	setp.lt.s32 	%p3, %r932, %r930;
 	setp.lt.s32 	%p4, %r933, %r930;
 	mov.b32 	%r661, 0;
-	.loc	1 39 82                         // router_kernels.py:39:82
+	.loc	1 40 82                         // router_kernels.py:40:82
 	// begin inline asm
 	mov.u32 %r1, %r661;
 	mov.u32 %r2, %r661;
@@ -161,126 +165,128 @@ $L__tmp0:
 	mov.u32 %r16, %r661;
 	@%p4 ld.global.v4.b32 { %r13, %r14, %r15, %r16 }, [ %rd4 + 0 ];
 	// end inline asm
-	.loc	1 44 22                         // router_kernels.py:44:22
-	shl.b32 	%r970, %r925, 4;
-	xor.b32 	%r971, %r970, %r926;
-	mov.b32 	%r972, global_smem;
-	add.s32 	%r973, %r972, %r971;
-	st.shared.v4.b32 	[%r973], {%r1, %r2, %r3, %r4};
-	st.shared.v4.b32 	[%r973+2048], {%r5, %r6, %r7, %r8};
-	st.shared.v4.b32 	[%r973+4096], {%r9, %r10, %r11, %r12};
-	st.shared.v4.b32 	[%r973+6144], {%r13, %r14, %r15, %r16};
-	.loc	1 51 52                         // router_kernels.py:51:52
-	shr.u32 	%r974, %r926, 1;
-	xor.b32 	%r975, %r970, %r974;
-	add.s32 	%r976, %r972, %r975;
-	st.shared.v4.b32 	[%r976+8192], {%r1, %r2, %r3, %r4};
-	st.shared.v4.b32 	[%r976+12288], {%r9, %r10, %r11, %r12};
-	xor.b32 	%r977, %r975, 64;
-	add.s32 	%r978, %r972, %r977;
-	st.shared.v4.b32 	[%r978+10240], {%r5, %r6, %r7, %r8};
-	st.shared.v4.b32 	[%r978+14336], {%r13, %r14, %r15, %r16};
+	.loc	1 45 22                         // router_kernels.py:45:22
+	shl.b32 	%r972, %r925, 4;
+	xor.b32 	%r973, %r972, %r926;
+	mov.b32 	%r974, global_smem;
+	add.s32 	%r975, %r974, %r973;
+	st.shared.v4.b32 	[%r975], {%r1, %r2, %r3, %r4};
+	st.shared.v4.b32 	[%r975+2048], {%r5, %r6, %r7, %r8};
+	st.shared.v4.b32 	[%r975+4096], {%r9, %r10, %r11, %r12};
+	st.shared.v4.b32 	[%r975+6144], {%r13, %r14, %r15, %r16};
+	.loc	1 52 52                         // router_kernels.py:52:52
+	shr.u32 	%r976, %r926, 1;
+	xor.b32 	%r977, %r972, %r976;
+	add.s32 	%r978, %r974, %r977;
+	st.shared.v4.b32 	[%r978+8192], {%r1, %r2, %r3, %r4};
+	st.shared.v4.b32 	[%r978+12288], {%r9, %r10, %r11, %r12};
+	xor.b32 	%r979, %r977, 64;
+	add.s32 	%r980, %r974, %r979;
+	st.shared.v4.b32 	[%r980+10240], {%r5, %r6, %r7, %r8};
+	st.shared.v4.b32 	[%r980+14336], {%r13, %r14, %r15, %r16};
 	bar.sync 	0;
-	shl.b32 	%r979, %r968, 9;
-	and.b32 	%r980, %r924, 7;
-	shl.b32 	%r981, %r980, 4;
-	and.b32 	%r982, %r924, 16;
-	xor.b32 	%r983, %r981, %r982;
-	or.b32 	%r984, %r983, %r979;
-	add.s32 	%r985, %r972, %r984;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r986, %r987, %r988, %r989}, [%r985+8192];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r990, %r991, %r992, %r993}, [%r985+8320];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r994, %r995, %r996, %r997}, [%r985+8448];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r998, %r999, %r1000, %r1001}, [%r985+8576];
-	xor.b32 	%r1002, %r984, 32;
-	add.s32 	%r1003, %r972, %r1002;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1004, %r1005, %r1006, %r1007}, [%r1003+8192];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1008, %r1009, %r1010, %r1011}, [%r1003+8320];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1012, %r1013, %r1014, %r1015}, [%r1003+8448];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1016, %r1017, %r1018, %r1019}, [%r1003+8576];
-	xor.b32 	%r1020, %r984, 64;
-	add.s32 	%r1021, %r972, %r1020;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1022, %r1023, %r1024, %r1025}, [%r1021+8192];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1026, %r1027, %r1028, %r1029}, [%r1021+8320];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1030, %r1031, %r1032, %r1033}, [%r1021+8448];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1034, %r1035, %r1036, %r1037}, [%r1021+8576];
-	xor.b32 	%r1038, %r984, 96;
-	add.s32 	%r1039, %r972, %r1038;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1040, %r1041, %r1042, %r1043}, [%r1039+8192];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1044, %r1045, %r1046, %r1047}, [%r1039+8320];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1048, %r1049, %r1050, %r1051}, [%r1039+8448];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1052, %r1053, %r1054, %r1055}, [%r1039+8576];
-	.loc	1 44 22                         // router_kernels.py:44:22
-	shl.b32 	%r1056, %r928, 7;
-	or.b32 	%r1057, %r1056, %r969;
-	add.s32 	%r1058, %r972, %r1057;
-	ld.shared.v2.b32 	{%r117, %r118}, [%r1058];
-	ld.shared.v2.b32 	{%r119, %r120}, [%r1058+4096];
-	ld.shared.v2.b32 	{%r133, %r134}, [%r1058+128];
-	ld.shared.v2.b32 	{%r135, %r136}, [%r1058+4224];
-	ld.shared.v2.b32 	{%r149, %r150}, [%r1058+256];
-	ld.shared.v2.b32 	{%r151, %r152}, [%r1058+4352];
-	ld.shared.v2.b32 	{%r165, %r166}, [%r1058+384];
-	ld.shared.v2.b32 	{%r167, %r168}, [%r1058+4480];
-	xor.b32 	%r1059, %r1057, 32;
-	add.s32 	%r1060, %r972, %r1059;
-	ld.shared.v2.b32 	{%r121, %r122}, [%r1060];
-	ld.shared.v2.b32 	{%r123, %r124}, [%r1060+4096];
-	ld.shared.v2.b32 	{%r137, %r138}, [%r1060+128];
-	ld.shared.v2.b32 	{%r139, %r140}, [%r1060+4224];
-	ld.shared.v2.b32 	{%r153, %r154}, [%r1060+256];
-	ld.shared.v2.b32 	{%r155, %r156}, [%r1060+4352];
-	ld.shared.v2.b32 	{%r169, %r170}, [%r1060+384];
-	ld.shared.v2.b32 	{%r171, %r172}, [%r1060+4480];
-	xor.b32 	%r1061, %r1057, 64;
-	add.s32 	%r1062, %r972, %r1061;
-	ld.shared.v2.b32 	{%r125, %r126}, [%r1062];
-	ld.shared.v2.b32 	{%r127, %r128}, [%r1062+4096];
-	ld.shared.v2.b32 	{%r141, %r142}, [%r1062+128];
-	ld.shared.v2.b32 	{%r143, %r144}, [%r1062+4224];
-	ld.shared.v2.b32 	{%r157, %r158}, [%r1062+256];
-	ld.shared.v2.b32 	{%r159, %r160}, [%r1062+4352];
-	ld.shared.v2.b32 	{%r173, %r174}, [%r1062+384];
-	ld.shared.v2.b32 	{%r175, %r176}, [%r1062+4480];
-	xor.b32 	%r1063, %r1057, 96;
-	add.s32 	%r1064, %r972, %r1063;
-	ld.shared.v2.b32 	{%r129, %r130}, [%r1064];
-	ld.shared.v2.b32 	{%r131, %r132}, [%r1064+4096];
-	ld.shared.v2.b32 	{%r145, %r146}, [%r1064+128];
-	ld.shared.v2.b32 	{%r147, %r148}, [%r1064+4224];
-	ld.shared.v2.b32 	{%r161, %r162}, [%r1064+256];
-	ld.shared.v2.b32 	{%r163, %r164}, [%r1064+4352];
-	ld.shared.v2.b32 	{%r177, %r178}, [%r1064+384];
-	ld.shared.v2.b32 	{%r179, %r180}, [%r1064+4480];
-	.loc	1 40 33                         // router_kernels.py:40:33
-	add.s32 	%r1065, %r957, %r944;
-	add.s32 	%r1066, %r957, %r945;
-	add.s32 	%r1067, %r957, %r946;
-	add.s32 	%r1068, %r957, %r947;
-	add.s32 	%r1069, %r957, %r948;
-	add.s32 	%r1070, %r957, %r949;
-	add.s32 	%r1071, %r957, %r950;
-	add.s32 	%r1072, %r957, %r951;
-	.loc	1 40 48                         // router_kernels.py:40:48
-	shl.b32 	%r1073, %r1065, 7;
-	shl.b32 	%r1074, %r1066, 7;
-	shl.b32 	%r1075, %r1067, 7;
+	shl.b32 	%r981, %r970, 9;
+	and.b32 	%r982, %r924, 7;
+	shl.b32 	%r983, %r982, 4;
+	and.b32 	%r984, %r924, 16;
+	xor.b32 	%r985, %r983, %r984;
+	or.b32 	%r986, %r985, %r981;
+	add.s32 	%r987, %r974, %r986;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r988, %r989, %r990, %r991}, [%r987+8192];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r992, %r993, %r994, %r995}, [%r987+8320];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r996, %r997, %r998, %r999}, [%r987+8448];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1000, %r1001, %r1002, %r1003}, [%r987+8576];
+	xor.b32 	%r1004, %r986, 32;
+	add.s32 	%r1005, %r974, %r1004;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1006, %r1007, %r1008, %r1009}, [%r1005+8192];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1010, %r1011, %r1012, %r1013}, [%r1005+8320];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1014, %r1015, %r1016, %r1017}, [%r1005+8448];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1018, %r1019, %r1020, %r1021}, [%r1005+8576];
+	xor.b32 	%r1022, %r986, 64;
+	add.s32 	%r1023, %r974, %r1022;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1024, %r1025, %r1026, %r1027}, [%r1023+8192];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1028, %r1029, %r1030, %r1031}, [%r1023+8320];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1032, %r1033, %r1034, %r1035}, [%r1023+8448];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1036, %r1037, %r1038, %r1039}, [%r1023+8576];
+	xor.b32 	%r1040, %r986, 96;
+	add.s32 	%r1041, %r974, %r1040;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1042, %r1043, %r1044, %r1045}, [%r1041+8192];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1046, %r1047, %r1048, %r1049}, [%r1041+8320];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1050, %r1051, %r1052, %r1053}, [%r1041+8448];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1054, %r1055, %r1056, %r1057}, [%r1041+8576];
+	.loc	1 45 22                         // router_kernels.py:45:22
+	shl.b32 	%r1058, %r928, 7;
+	or.b32 	%r1059, %r1058, %r971;
+	add.s32 	%r1060, %r974, %r1059;
+	ld.shared.v2.b32 	{%r117, %r118}, [%r1060];
+	ld.shared.v2.b32 	{%r119, %r120}, [%r1060+4096];
+	ld.shared.v2.b32 	{%r133, %r134}, [%r1060+128];
+	ld.shared.v2.b32 	{%r135, %r136}, [%r1060+4224];
+	ld.shared.v2.b32 	{%r149, %r150}, [%r1060+256];
+	ld.shared.v2.b32 	{%r151, %r152}, [%r1060+4352];
+	ld.shared.v2.b32 	{%r165, %r166}, [%r1060+384];
+	ld.shared.v2.b32 	{%r167, %r168}, [%r1060+4480];
+	xor.b32 	%r1061, %r1059, 32;
+	add.s32 	%r1062, %r974, %r1061;
+	ld.shared.v2.b32 	{%r121, %r122}, [%r1062];
+	ld.shared.v2.b32 	{%r123, %r124}, [%r1062+4096];
+	ld.shared.v2.b32 	{%r137, %r138}, [%r1062+128];
+	ld.shared.v2.b32 	{%r139, %r140}, [%r1062+4224];
+	ld.shared.v2.b32 	{%r153, %r154}, [%r1062+256];
+	ld.shared.v2.b32 	{%r155, %r156}, [%r1062+4352];
+	ld.shared.v2.b32 	{%r169, %r170}, [%r1062+384];
+	ld.shared.v2.b32 	{%r171, %r172}, [%r1062+4480];
+	xor.b32 	%r1063, %r1059, 64;
+	add.s32 	%r1064, %r974, %r1063;
+	ld.shared.v2.b32 	{%r125, %r126}, [%r1064];
+	ld.shared.v2.b32 	{%r127, %r128}, [%r1064+4096];
+	ld.shared.v2.b32 	{%r141, %r142}, [%r1064+128];
+	ld.shared.v2.b32 	{%r143, %r144}, [%r1064+4224];
+	ld.shared.v2.b32 	{%r157, %r158}, [%r1064+256];
+	ld.shared.v2.b32 	{%r159, %r160}, [%r1064+4352];
+	ld.shared.v2.b32 	{%r173, %r174}, [%r1064+384];
+	ld.shared.v2.b32 	{%r175, %r176}, [%r1064+4480];
+	xor.b32 	%r1065, %r1059, 96;
+	add.s32 	%r1066, %r974, %r1065;
+	ld.shared.v2.b32 	{%r129, %r130}, [%r1066];
+	ld.shared.v2.b32 	{%r131, %r132}, [%r1066+4096];
+	ld.shared.v2.b32 	{%r145, %r146}, [%r1066+128];
+	ld.shared.v2.b32 	{%r147, %r148}, [%r1066+4224];
+	ld.shared.v2.b32 	{%r161, %r162}, [%r1066+256];
+	ld.shared.v2.b32 	{%r163, %r164}, [%r1066+4352];
+	ld.shared.v2.b32 	{%r177, %r178}, [%r1066+384];
+	ld.shared.v2.b32 	{%r179, %r180}, [%r1066+4480];
+	.loc	1 41 27                         // router_kernels.py:41:27
+	mul.lo.s32 	%r1067, %r958, %r930;
+	.loc	1 41 31                         // router_kernels.py:41:31
+	add.s32 	%r1068, %r1067, %r945;
+	add.s32 	%r1069, %r1067, %r946;
+	add.s32 	%r1070, %r1067, %r947;
+	add.s32 	%r1071, %r1067, %r948;
+	add.s32 	%r1072, %r1067, %r949;
+	add.s32 	%r1073, %r1067, %r950;
+	add.s32 	%r1074, %r1067, %r951;
+	add.s32 	%r1075, %r1067, %r952;
+	.loc	1 41 46                         // router_kernels.py:41:46
 	shl.b32 	%r1076, %r1068, 7;
 	shl.b32 	%r1077, %r1069, 7;
 	shl.b32 	%r1078, %r1070, 7;
 	shl.b32 	%r1079, %r1071, 7;
 	shl.b32 	%r1080, %r1072, 7;
-	.loc	1 40 21                         // router_kernels.py:40:21
-	mad.wide.s32 	%rd61, %r1073, 2, %rd47;
-	mad.wide.s32 	%rd62, %r1074, 2, %rd47;
-	mad.wide.s32 	%rd63, %r1075, 2, %rd47;
-	mad.wide.s32 	%rd64, %r1076, 2, %rd47;
-	mad.wide.s32 	%rd65, %r1077, 2, %rd47;
-	mad.wide.s32 	%rd66, %r1078, 2, %rd47;
-	mad.wide.s32 	%rd67, %r1079, 2, %rd47;
-	mad.wide.s32 	%rd68, %r1080, 2, %rd47;
-	.loc	1 40 54                         // router_kernels.py:40:54
-	mul.wide.u32 	%rd69, %r969, 2;
+	shl.b32 	%r1081, %r1073, 7;
+	shl.b32 	%r1082, %r1074, 7;
+	shl.b32 	%r1083, %r1075, 7;
+	.loc	1 41 21                         // router_kernels.py:41:21
+	mad.wide.s32 	%rd61, %r1076, 2, %rd47;
+	mad.wide.s32 	%rd62, %r1077, 2, %rd47;
+	mad.wide.s32 	%rd63, %r1078, 2, %rd47;
+	mad.wide.s32 	%rd64, %r1079, 2, %rd47;
+	mad.wide.s32 	%rd65, %r1080, 2, %rd47;
+	mad.wide.s32 	%rd66, %r1081, 2, %rd47;
+	mad.wide.s32 	%rd67, %r1082, 2, %rd47;
+	mad.wide.s32 	%rd68, %r1083, 2, %rd47;
+	.loc	1 41 52                         // router_kernels.py:41:52
+	mul.wide.u32 	%rd69, %r971, 2;
 	add.s64 	%rd5, %rd61, %rd69;
 	add.s64 	%rd6, %rd62, %rd69;
 	add.s64 	%rd7, %rd63, %rd69;
@@ -289,16 +295,16 @@ $L__tmp0:
 	add.s64 	%rd10, %rd66, %rd69;
 	add.s64 	%rd11, %rd67, %rd69;
 	add.s64 	%rd12, %rd68, %rd69;
-	.loc	1 40 80                         // router_kernels.py:40:80
-	setp.lt.s32 	%p5, %r944, %r930;
-	setp.lt.s32 	%p6, %r945, %r930;
-	setp.lt.s32 	%p7, %r946, %r930;
-	setp.lt.s32 	%p8, %r947, %r930;
-	setp.lt.s32 	%p9, %r948, %r930;
-	setp.lt.s32 	%p10, %r949, %r930;
-	setp.lt.s32 	%p11, %r950, %r930;
-	setp.lt.s32 	%p12, %r951, %r930;
-	.loc	1 40 83                         // router_kernels.py:40:83
+	.loc	1 41 78                         // router_kernels.py:41:78
+	setp.lt.s32 	%p5, %r945, %r930;
+	setp.lt.s32 	%p6, %r946, %r930;
+	setp.lt.s32 	%p7, %r947, %r930;
+	setp.lt.s32 	%p8, %r948, %r930;
+	setp.lt.s32 	%p9, %r949, %r930;
+	setp.lt.s32 	%p10, %r950, %r930;
+	setp.lt.s32 	%p11, %r951, %r930;
+	setp.lt.s32 	%p12, %r952, %r930;
+	.loc	1 41 81                         // router_kernels.py:41:81
 	// begin inline asm
 	mov.u32 %r17, %r661;
 	mov.u32 %r18, %r661;
@@ -355,75 +361,75 @@ $L__tmp0:
 	mov.u32 %r48, %r661;
 	@%p12 ld.global.v4.b32 { %r45, %r46, %r47, %r48 }, [ %rd12 + 0 ];
 	// end inline asm
-	.loc	1 44 22                         // router_kernels.py:44:22
+	.loc	1 45 22                         // router_kernels.py:45:22
 	bar.sync 	0;
-	shl.b32 	%r1081, %r924, 6;
-	and.b32 	%r1082, %r1081, 7680;
-	or.b32 	%r1083, %r1082, %r981;
-	xor.b32 	%r1084, %r1083, %r938;
-	add.s32 	%r1085, %r972, %r1084;
-	st.shared.v4.b32 	[%r1085], {%r17, %r18, %r19, %r20};
-	st.shared.v4.b32 	[%r1085+128], {%r21, %r22, %r23, %r24};
-	st.shared.v4.b32 	[%r1085+256], {%r25, %r26, %r27, %r28};
-	st.shared.v4.b32 	[%r1085+384], {%r29, %r30, %r31, %r32};
+	shl.b32 	%r1084, %r924, 6;
+	and.b32 	%r1085, %r1084, 7680;
+	or.b32 	%r1086, %r1085, %r983;
+	xor.b32 	%r1087, %r1086, %r939;
+	add.s32 	%r1088, %r974, %r1087;
+	st.shared.v4.b32 	[%r1088], {%r17, %r18, %r19, %r20};
+	st.shared.v4.b32 	[%r1088+128], {%r21, %r22, %r23, %r24};
+	st.shared.v4.b32 	[%r1088+256], {%r25, %r26, %r27, %r28};
+	st.shared.v4.b32 	[%r1088+384], {%r29, %r30, %r31, %r32};
 	bar.sync 	0;
-	shl.b32 	%r1086, %r980, 10;
-	shl.b32 	%r1087, %r926, 2;
-	and.b32 	%r1088, %r924, 24;
-	shl.b32 	%r1089, %r1088, 1;
-	or.b32 	%r1090, %r981, %r1087;
-	xor.b32 	%r1091, %r1090, %r1089;
-	or.b32 	%r1092, %r1091, %r1086;
-	add.s32 	%r1093, %r972, %r1092;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1094, %r1095, %r1096, %r1097}, [%r1093];
-	mov.b32 	{%rs9, %rs10}, %r1094;
-	mov.b32 	{%rs11, %rs12}, %r1095;
-	mov.b32 	{%rs13, %rs14}, %r1096;
-	mov.b32 	{%rs15, %rs16}, %r1097;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1098, %r1099, %r1100, %r1101}, [%r1093+512];
-	mov.b32 	{%rs17, %rs18}, %r1098;
-	mov.b32 	{%rs19, %rs20}, %r1099;
-	mov.b32 	{%rs21, %rs22}, %r1100;
-	mov.b32 	{%rs23, %rs24}, %r1101;
-	xor.b32 	%r1102, %r1092, 64;
-	add.s32 	%r1103, %r972, %r1102;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1104, %r1105, %r1106, %r1107}, [%r1103];
-	mov.b32 	{%rs25, %rs26}, %r1104;
-	mov.b32 	{%rs27, %rs28}, %r1105;
-	mov.b32 	{%rs29, %rs30}, %r1106;
-	mov.b32 	{%rs31, %rs32}, %r1107;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1108, %r1109, %r1110, %r1111}, [%r1103+512];
-	mov.b32 	{%rs33, %rs34}, %r1108;
-	mov.b32 	{%rs35, %rs36}, %r1109;
-	mov.b32 	{%rs37, %rs38}, %r1110;
-	mov.b32 	{%rs39, %rs40}, %r1111;
+	shl.b32 	%r1089, %r982, 10;
+	shl.b32 	%r1090, %r926, 2;
+	and.b32 	%r1091, %r924, 24;
+	shl.b32 	%r1092, %r1091, 1;
+	or.b32 	%r1093, %r983, %r1090;
+	xor.b32 	%r1094, %r1093, %r1092;
+	or.b32 	%r1095, %r1094, %r1089;
+	add.s32 	%r1096, %r974, %r1095;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1097, %r1098, %r1099, %r1100}, [%r1096];
+	mov.b32 	{%rs9, %rs10}, %r1097;
+	mov.b32 	{%rs11, %rs12}, %r1098;
+	mov.b32 	{%rs13, %rs14}, %r1099;
+	mov.b32 	{%rs15, %rs16}, %r1100;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1101, %r1102, %r1103, %r1104}, [%r1096+512];
+	mov.b32 	{%rs17, %rs18}, %r1101;
+	mov.b32 	{%rs19, %rs20}, %r1102;
+	mov.b32 	{%rs21, %rs22}, %r1103;
+	mov.b32 	{%rs23, %rs24}, %r1104;
+	xor.b32 	%r1105, %r1095, 64;
+	add.s32 	%r1106, %r974, %r1105;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1107, %r1108, %r1109, %r1110}, [%r1106];
+	mov.b32 	{%rs25, %rs26}, %r1107;
+	mov.b32 	{%rs27, %rs28}, %r1108;
+	mov.b32 	{%rs29, %rs30}, %r1109;
+	mov.b32 	{%rs31, %rs32}, %r1110;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1111, %r1112, %r1113, %r1114}, [%r1106+512];
+	mov.b32 	{%rs33, %rs34}, %r1111;
+	mov.b32 	{%rs35, %rs36}, %r1112;
+	mov.b32 	{%rs37, %rs38}, %r1113;
+	mov.b32 	{%rs39, %rs40}, %r1114;
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1085], {%r33, %r34, %r35, %r36};
-	st.shared.v4.b32 	[%r1085+128], {%r37, %r38, %r39, %r40};
-	st.shared.v4.b32 	[%r1085+256], {%r41, %r42, %r43, %r44};
-	st.shared.v4.b32 	[%r1085+384], {%r45, %r46, %r47, %r48};
+	st.shared.v4.b32 	[%r1088], {%r33, %r34, %r35, %r36};
+	st.shared.v4.b32 	[%r1088+128], {%r37, %r38, %r39, %r40};
+	st.shared.v4.b32 	[%r1088+256], {%r41, %r42, %r43, %r44};
+	st.shared.v4.b32 	[%r1088+384], {%r45, %r46, %r47, %r48};
 	bar.sync 	0;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1112, %r1113, %r1114, %r1115}, [%r1093];
-	mov.b32 	{%rs41, %rs42}, %r1112;
-	mov.b32 	{%rs43, %rs44}, %r1113;
-	mov.b32 	{%rs45, %rs46}, %r1114;
-	mov.b32 	{%rs47, %rs48}, %r1115;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1116, %r1117, %r1118, %r1119}, [%r1093+512];
-	mov.b32 	{%rs49, %rs50}, %r1116;
-	mov.b32 	{%rs51, %rs52}, %r1117;
-	mov.b32 	{%rs53, %rs54}, %r1118;
-	mov.b32 	{%rs55, %rs56}, %r1119;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1120, %r1121, %r1122, %r1123}, [%r1103];
-	mov.b32 	{%rs57, %rs58}, %r1120;
-	mov.b32 	{%rs59, %rs60}, %r1121;
-	mov.b32 	{%rs61, %rs62}, %r1122;
-	mov.b32 	{%rs63, %rs64}, %r1123;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1124, %r1125, %r1126, %r1127}, [%r1103+512];
-	mov.b32 	{%rs65, %rs66}, %r1124;
-	mov.b32 	{%rs67, %rs68}, %r1125;
-	mov.b32 	{%rs69, %rs70}, %r1126;
-	mov.b32 	{%rs71, %rs72}, %r1127;
-	.loc	1 40 89                         // router_kernels.py:40:89
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1115, %r1116, %r1117, %r1118}, [%r1096];
+	mov.b32 	{%rs41, %rs42}, %r1115;
+	mov.b32 	{%rs43, %rs44}, %r1116;
+	mov.b32 	{%rs45, %rs46}, %r1117;
+	mov.b32 	{%rs47, %rs48}, %r1118;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1119, %r1120, %r1121, %r1122}, [%r1096+512];
+	mov.b32 	{%rs49, %rs50}, %r1119;
+	mov.b32 	{%rs51, %rs52}, %r1120;
+	mov.b32 	{%rs53, %rs54}, %r1121;
+	mov.b32 	{%rs55, %rs56}, %r1122;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1123, %r1124, %r1125, %r1126}, [%r1106];
+	mov.b32 	{%rs57, %rs58}, %r1123;
+	mov.b32 	{%rs59, %rs60}, %r1124;
+	mov.b32 	{%rs61, %rs62}, %r1125;
+	mov.b32 	{%rs63, %rs64}, %r1126;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r1127, %r1128, %r1129, %r1130}, [%r1106+512];
+	mov.b32 	{%rs65, %rs66}, %r1127;
+	mov.b32 	{%rs67, %rs68}, %r1128;
+	mov.b32 	{%rs69, %rs70}, %r1129;
+	mov.b32 	{%rs71, %rs72}, %r1130;
+	.loc	1 41 87                         // router_kernels.py:41:87
 	cvt.f32.bf16 	%r181, %rs9;
 	cvt.f32.bf16 	%r182, %rs10;
 	cvt.f32.bf16 	%r183, %rs11;
@@ -488,17 +494,17 @@ $L__tmp0:
 	cvt.f32.bf16 	%r242, %rs70;
 	cvt.f32.bf16 	%r243, %rs71;
 	cvt.f32.bf16 	%r244, %rs72;
-	.loc	1 41 25                         // router_kernels.py:41:25
-	mad.wide.s32 	%rd70, %r1073, 4, %rd48;
-	mad.wide.s32 	%rd71, %r1074, 4, %rd48;
-	mad.wide.s32 	%rd72, %r1075, 4, %rd48;
-	mad.wide.s32 	%rd73, %r1076, 4, %rd48;
-	mad.wide.s32 	%rd74, %r1077, 4, %rd48;
-	mad.wide.s32 	%rd75, %r1078, 4, %rd48;
-	mad.wide.s32 	%rd76, %r1079, 4, %rd48;
-	mad.wide.s32 	%rd77, %r1080, 4, %rd48;
-	.loc	1 41 58                         // router_kernels.py:41:58
-	mul.wide.u32 	%rd78, %r969, 4;
+	.loc	1 42 25                         // router_kernels.py:42:25
+	mad.wide.s32 	%rd70, %r1076, 4, %rd48;
+	mad.wide.s32 	%rd71, %r1077, 4, %rd48;
+	mad.wide.s32 	%rd72, %r1078, 4, %rd48;
+	mad.wide.s32 	%rd73, %r1079, 4, %rd48;
+	mad.wide.s32 	%rd74, %r1080, 4, %rd48;
+	mad.wide.s32 	%rd75, %r1081, 4, %rd48;
+	mad.wide.s32 	%rd76, %r1082, 4, %rd48;
+	mad.wide.s32 	%rd77, %r1083, 4, %rd48;
+	.loc	1 42 56                         // router_kernels.py:42:56
+	mul.wide.u32 	%rd78, %r971, 4;
 	add.s64 	%rd13, %rd70, %rd78;
 	add.s64 	%rd14, %rd13, 16;
 	add.s64 	%rd15, %rd71, %rd78;
@@ -515,7 +521,7 @@ $L__tmp0:
 	add.s64 	%rd26, %rd25, 16;
 	add.s64 	%rd27, %rd77, %rd78;
 	add.s64 	%rd28, %rd27, 16;
-	.loc	1 41 87                         // router_kernels.py:41:87
+	.loc	1 42 85                         // router_kernels.py:42:85
 	// begin inline asm
 	mov.u32 %r49, %r661;
 	mov.u32 %r50, %r661;
@@ -628,60 +634,60 @@ $L__tmp0:
 	mov.u32 %r112, %r661;
 	@%p12 ld.global.v4.b32 { %r109, %r110, %r111, %r112 }, [ %rd28 + 0 ];
 	// end inline asm
-	.loc	1 51 52                         // router_kernels.py:51:52
+	.loc	1 52 52                         // router_kernels.py:52:52
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1085], {%r49, %r50, %r51, %r52};
-	st.shared.v4.b32 	[%r1085+128], {%r57, %r58, %r59, %r60};
-	st.shared.v4.b32 	[%r1085+256], {%r65, %r66, %r67, %r68};
-	st.shared.v4.b32 	[%r1085+384], {%r73, %r74, %r75, %r76};
+	st.shared.v4.b32 	[%r1088], {%r49, %r50, %r51, %r52};
+	st.shared.v4.b32 	[%r1088+128], {%r57, %r58, %r59, %r60};
+	st.shared.v4.b32 	[%r1088+256], {%r65, %r66, %r67, %r68};
+	st.shared.v4.b32 	[%r1088+384], {%r73, %r74, %r75, %r76};
 	bar.sync 	0;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r583, %r585, %r587, %r589}, [%r1093];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r599, %r601, %r603, %r605}, [%r1093+512];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r591, %r593, %r595, %r597}, [%r1103];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r607, %r609, %r611, %r613}, [%r1103+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r583, %r585, %r587, %r589}, [%r1096];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r599, %r601, %r603, %r605}, [%r1096+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r591, %r593, %r595, %r597}, [%r1106];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r607, %r609, %r611, %r613}, [%r1106+512];
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1085], {%r81, %r82, %r83, %r84};
-	st.shared.v4.b32 	[%r1085+128], {%r89, %r90, %r91, %r92};
-	st.shared.v4.b32 	[%r1085+256], {%r97, %r98, %r99, %r100};
-	st.shared.v4.b32 	[%r1085+384], {%r105, %r106, %r107, %r108};
+	st.shared.v4.b32 	[%r1088], {%r81, %r82, %r83, %r84};
+	st.shared.v4.b32 	[%r1088+128], {%r89, %r90, %r91, %r92};
+	st.shared.v4.b32 	[%r1088+256], {%r97, %r98, %r99, %r100};
+	st.shared.v4.b32 	[%r1088+384], {%r105, %r106, %r107, %r108};
 	bar.sync 	0;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r615, %r617, %r619, %r621}, [%r1093];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r631, %r633, %r635, %r637}, [%r1093+512];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r623, %r625, %r627, %r629}, [%r1103];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r639, %r641, %r643, %r645}, [%r1103+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r615, %r617, %r619, %r621}, [%r1096];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r631, %r633, %r635, %r637}, [%r1096+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r623, %r625, %r627, %r629}, [%r1106];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r639, %r641, %r643, %r645}, [%r1106+512];
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1085], {%r53, %r54, %r55, %r56};
-	st.shared.v4.b32 	[%r1085+128], {%r61, %r62, %r63, %r64};
-	st.shared.v4.b32 	[%r1085+256], {%r69, %r70, %r71, %r72};
-	st.shared.v4.b32 	[%r1085+384], {%r77, %r78, %r79, %r80};
+	st.shared.v4.b32 	[%r1088], {%r53, %r54, %r55, %r56};
+	st.shared.v4.b32 	[%r1088+128], {%r61, %r62, %r63, %r64};
+	st.shared.v4.b32 	[%r1088+256], {%r69, %r70, %r71, %r72};
+	st.shared.v4.b32 	[%r1088+384], {%r77, %r78, %r79, %r80};
 	bar.sync 	0;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r584, %r586, %r588, %r590}, [%r1093];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r600, %r602, %r604, %r606}, [%r1093+512];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r592, %r594, %r596, %r598}, [%r1103];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r608, %r610, %r612, %r614}, [%r1103+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r584, %r586, %r588, %r590}, [%r1096];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r600, %r602, %r604, %r606}, [%r1096+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r592, %r594, %r596, %r598}, [%r1106];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r608, %r610, %r612, %r614}, [%r1106+512];
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1085], {%r85, %r86, %r87, %r88};
-	st.shared.v4.b32 	[%r1085+128], {%r93, %r94, %r95, %r96};
-	st.shared.v4.b32 	[%r1085+256], {%r101, %r102, %r103, %r104};
-	st.shared.v4.b32 	[%r1085+384], {%r109, %r110, %r111, %r112};
+	st.shared.v4.b32 	[%r1088], {%r85, %r86, %r87, %r88};
+	st.shared.v4.b32 	[%r1088+128], {%r93, %r94, %r95, %r96};
+	st.shared.v4.b32 	[%r1088+256], {%r101, %r102, %r103, %r104};
+	st.shared.v4.b32 	[%r1088+384], {%r109, %r110, %r111, %r112};
 	bar.sync 	0;
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r616, %r618, %r620, %r622}, [%r1093];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r632, %r634, %r636, %r638}, [%r1093+512];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r624, %r626, %r628, %r630}, [%r1103];
-	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r640, %r642, %r644, %r646}, [%r1103+512];
-	.loc	1 42 26                         // router_kernels.py:42:26
-	mad.wide.s32 	%rd79, %r957, 4, %rd49;
-	.loc	1 42 37                         // router_kernels.py:42:37
-	mad.wide.u32 	%rd29, %r952, 4, %rd79;
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r616, %r618, %r620, %r622}, [%r1096];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r632, %r634, %r636, %r638}, [%r1096+512];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r624, %r626, %r628, %r630}, [%r1106];
+	ldmatrix.sync.aligned.m8n8.x4.shared.b16 {%r640, %r642, %r644, %r646}, [%r1106+512];
+	.loc	1 43 26                         // router_kernels.py:43:26
+	mad.wide.s32 	%rd79, %r1067, 4, %rd49;
+	.loc	1 43 35                         // router_kernels.py:43:35
+	mad.wide.u32 	%rd29, %r953, 4, %rd79;
 	add.s64 	%rd30, %rd29, 4;
 	add.s64 	%rd31, %rd29, 128;
 	add.s64 	%rd32, %rd29, 132;
-	.loc	1 42 46                         // router_kernels.py:42:46
-	setp.lt.s32 	%p13, %r952, %r930;
-	setp.lt.s32 	%p14, %r953, %r930;
-	setp.lt.s32 	%p15, %r954, %r930;
-	setp.lt.s32 	%p16, %r955, %r930;
-	.loc	1 42 49                         // router_kernels.py:42:49
+	.loc	1 43 44                         // router_kernels.py:43:44
+	setp.lt.s32 	%p13, %r953, %r930;
+	setp.lt.s32 	%p14, %r954, %r930;
+	setp.lt.s32 	%p15, %r955, %r930;
+	setp.lt.s32 	%p16, %r956, %r930;
+	.loc	1 43 47                         // router_kernels.py:43:47
 	// begin inline asm
 	mov.u32 %r113, %r661;
 	@%p13 ld.global.b32 { %r113 }, [ %rd29 + 0 ];
@@ -698,9 +704,9 @@ $L__tmp0:
 	mov.u32 %r116, %r661;
 	@%p16 ld.global.b32 { %r116 }, [ %rd32 + 0 ];
 	// end inline asm
-	.loc	1 43 16                         // router_kernels.py:43:16
-	mul.f32 	%r1128, %r921, 0f3FB8AA3B;
-	.loc	1 44 22                         // router_kernels.py:44:22
+	.loc	1 44 16                         // router_kernels.py:44:16
+	mul.f32 	%r1131, %r921, 0f3FB8AA3B;
+	.loc	1 45 22                         // router_kernels.py:45:22
 	// begin inline asm
 	cvt.rna.tf32.f32 %r381, %r117;
 	// end inline asm
@@ -1525,538 +1531,538 @@ $L__tmp0:
 	// begin inline asm
 	mma.sync.aligned.m16n8k8.row.col.f32.tf32.tf32.f32 { %r513, %r514, %r515, %r516 }, { %r501, %r502, %r503, %r504 }, { %r379, %r380 }, { %r513, %r514, %r515, %r516 };
 	// end inline asm
-	.loc	1 45 13                         // router_kernels.py:45:13
-	mul.f32 	%r1129, %r1, %r1;
-	mul.f32 	%r1130, %r2, %r2;
-	mul.f32 	%r1131, %r3, %r3;
-	mul.f32 	%r1132, %r4, %r4;
-	mul.f32 	%r1133, %r5, %r5;
-	mul.f32 	%r1134, %r6, %r6;
-	mul.f32 	%r1135, %r7, %r7;
-	mul.f32 	%r1136, %r8, %r8;
-	mul.f32 	%r1137, %r9, %r9;
-	mul.f32 	%r1138, %r10, %r10;
-	mul.f32 	%r1139, %r11, %r11;
-	mul.f32 	%r1140, %r12, %r12;
-	mul.f32 	%r1141, %r13, %r13;
-	mul.f32 	%r1142, %r14, %r14;
-	mul.f32 	%r1143, %r15, %r15;
-	mul.f32 	%r1144, %r16, %r16;
-	.loc	1 46 42                         // router_kernels.py:46:42
-	shl.b32 	%r1145, %r956, 7;
-	.loc	1 46 35                         // router_kernels.py:46:35
-	mul.wide.u32 	%rd80, %r1145, 4;
+	.loc	1 46 13                         // router_kernels.py:46:13
+	mul.f32 	%r1132, %r1, %r1;
+	mul.f32 	%r1133, %r2, %r2;
+	mul.f32 	%r1134, %r3, %r3;
+	mul.f32 	%r1135, %r4, %r4;
+	mul.f32 	%r1136, %r5, %r5;
+	mul.f32 	%r1137, %r6, %r6;
+	mul.f32 	%r1138, %r7, %r7;
+	mul.f32 	%r1139, %r8, %r8;
+	mul.f32 	%r1140, %r9, %r9;
+	mul.f32 	%r1141, %r10, %r10;
+	mul.f32 	%r1142, %r11, %r11;
+	mul.f32 	%r1143, %r12, %r12;
+	mul.f32 	%r1144, %r13, %r13;
+	mul.f32 	%r1145, %r14, %r14;
+	mul.f32 	%r1146, %r15, %r15;
+	mul.f32 	%r1147, %r16, %r16;
+	.loc	1 47 40                         // router_kernels.py:47:40
+	shl.b32 	%r1148, %r958, 7;
+	.loc	1 47 35                         // router_kernels.py:47:35
+	mul.wide.s32 	%rd80, %r1148, 4;
 	add.s64 	%rd81, %rd50, %rd80;
-	.loc	1 46 48                         // router_kernels.py:46:48
+	.loc	1 47 46                         // router_kernels.py:47:46
 	mul.wide.u32 	%rd82, %r925, 4;
 	add.s64 	%rd33, %rd81, %rd82;
-	.loc	1 46 28                         // router_kernels.py:46:28
+	.loc	1 47 28                         // router_kernels.py:47:28
 	// begin inline asm
 	mov.u32 %r517, 0x0;
 	ld.global.b32 { %r517 }, [ %rd33 + 0 ];
 	// end inline asm
-	.loc	1 46 20                         // router_kernels.py:46:20
+	.loc	1 47 20                         // router_kernels.py:47:20
 	bar.sync 	0;
-	shl.b32 	%r1146, %r940, 7;
-	shl.b32 	%r1147, %r940, 5;
-	and.b32 	%r1148, %r924, 124;
-	xor.b32 	%r1149, %r1147, %r1148;
-	add.s32 	%r1150, %r972, %r1146;
-	add.s32 	%r1151, %r1150, %r1149;
-	st.shared.b32 	[%r1151], %r517;
+	shl.b32 	%r1149, %r941, 7;
+	shl.b32 	%r1150, %r941, 5;
+	and.b32 	%r1151, %r924, 124;
+	xor.b32 	%r1152, %r1150, %r1151;
+	add.s32 	%r1153, %r974, %r1149;
+	add.s32 	%r1154, %r1153, %r1152;
+	st.shared.b32 	[%r1154], %r517;
 	bar.sync 	0;
-	add.s32 	%r1152, %r972, %r967;
-	ld.shared.b32 	%r1153, [%r1152];
-	xor.b32 	%r1154, %r967, 32;
-	add.s32 	%r1155, %r972, %r1154;
-	ld.shared.b32 	%r1156, [%r1155+128];
-	xor.b32 	%r1157, %r967, 64;
-	add.s32 	%r1158, %r972, %r1157;
-	ld.shared.b32 	%r1159, [%r1158+256];
-	xor.b32 	%r1160, %r967, 96;
-	add.s32 	%r1161, %r972, %r1160;
-	ld.shared.b32 	%r1162, [%r1161+384];
-	mul.f32 	%r1163, %r1156, %r2;
-	mul.f32 	%r1164, %r1156, %r6;
-	mul.f32 	%r1165, %r1156, %r10;
-	mul.f32 	%r1166, %r1156, %r14;
+	add.s32 	%r1155, %r974, %r969;
+	ld.shared.b32 	%r1156, [%r1155];
+	xor.b32 	%r1157, %r969, 32;
+	add.s32 	%r1158, %r974, %r1157;
+	ld.shared.b32 	%r1159, [%r1158+128];
+	xor.b32 	%r1160, %r969, 64;
+	add.s32 	%r1161, %r974, %r1160;
+	ld.shared.b32 	%r1162, [%r1161+256];
+	xor.b32 	%r1163, %r969, 96;
+	add.s32 	%r1164, %r974, %r1163;
+	ld.shared.b32 	%r1165, [%r1164+384];
+	mul.f32 	%r1166, %r1159, %r2;
+	mul.f32 	%r1167, %r1159, %r6;
+	mul.f32 	%r1168, %r1159, %r10;
+	mul.f32 	%r1169, %r1159, %r14;
 $L__tmp1:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	fma.rn.f32 	%r1167, %r1153, %r1, %r1163;
-	fma.rn.f32 	%r1168, %r1159, %r3, %r1167;
-	fma.rn.f32 	%r1169, %r1162, %r4, %r1168;
-	fma.rn.f32 	%r1170, %r1153, %r5, %r1164;
-	fma.rn.f32 	%r1171, %r1159, %r7, %r1170;
-	fma.rn.f32 	%r1172, %r1162, %r8, %r1171;
-	fma.rn.f32 	%r1173, %r1153, %r9, %r1165;
-	fma.rn.f32 	%r1174, %r1159, %r11, %r1173;
-	fma.rn.f32 	%r1175, %r1162, %r12, %r1174;
-	fma.rn.f32 	%r1176, %r1153, %r13, %r1166;
-	fma.rn.f32 	%r1177, %r1159, %r15, %r1176;
-	fma.rn.f32 	%r1178, %r1162, %r16, %r1177;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	fma.rn.f32 	%r1170, %r1156, %r1, %r1166;
+	fma.rn.f32 	%r1171, %r1162, %r3, %r1170;
+	fma.rn.f32 	%r1172, %r1165, %r4, %r1171;
+	fma.rn.f32 	%r1173, %r1156, %r5, %r1167;
+	fma.rn.f32 	%r1174, %r1162, %r7, %r1173;
+	fma.rn.f32 	%r1175, %r1165, %r8, %r1174;
+	fma.rn.f32 	%r1176, %r1156, %r9, %r1168;
+	fma.rn.f32 	%r1177, %r1162, %r11, %r1176;
+	fma.rn.f32 	%r1178, %r1165, %r12, %r1177;
+	fma.rn.f32 	%r1179, %r1156, %r13, %r1169;
+	fma.rn.f32 	%r1180, %r1162, %r15, %r1179;
+	fma.rn.f32 	%r1181, %r1165, %r16, %r1180;
 $L__tmp2:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1179, %r1169, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1182, %r1172, 16, 31, -1;
 $L__tmp3:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1180, %r1169, %r1179;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1183, %r1172, %r1182;
 $L__tmp4:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1181, %r1180, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1184, %r1183, 8, 31, -1;
 $L__tmp5:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1182, %r1180, %r1181;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1185, %r1183, %r1184;
 $L__tmp6:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1183, %r1182, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1186, %r1185, 4, 31, -1;
 $L__tmp7:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1184, %r1182, %r1183;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1187, %r1185, %r1186;
 $L__tmp8:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1185, %r1184, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1188, %r1187, 2, 31, -1;
 $L__tmp9:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1186, %r1184, %r1185;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1189, %r1187, %r1188;
 $L__tmp10:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1187, %r1186, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1188, %r1172, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1190, %r1189, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1191, %r1175, 16, 31, -1;
 $L__tmp11:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1189, %r1172, %r1188;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1192, %r1175, %r1191;
 $L__tmp12:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1190, %r1189, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1193, %r1192, 8, 31, -1;
 $L__tmp13:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1191, %r1189, %r1190;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1194, %r1192, %r1193;
 $L__tmp14:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1192, %r1191, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1195, %r1194, 4, 31, -1;
 $L__tmp15:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1193, %r1191, %r1192;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1196, %r1194, %r1195;
 $L__tmp16:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1194, %r1193, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1197, %r1196, 2, 31, -1;
 $L__tmp17:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1195, %r1193, %r1194;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1198, %r1196, %r1197;
 $L__tmp18:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1196, %r1195, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1197, %r1175, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1199, %r1198, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1200, %r1178, 16, 31, -1;
 $L__tmp19:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1198, %r1175, %r1197;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1201, %r1178, %r1200;
 $L__tmp20:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1199, %r1198, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1202, %r1201, 8, 31, -1;
 $L__tmp21:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1200, %r1198, %r1199;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1203, %r1201, %r1202;
 $L__tmp22:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1201, %r1200, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1204, %r1203, 4, 31, -1;
 $L__tmp23:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1202, %r1200, %r1201;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1205, %r1203, %r1204;
 $L__tmp24:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1203, %r1202, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1206, %r1205, 2, 31, -1;
 $L__tmp25:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1204, %r1202, %r1203;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1207, %r1205, %r1206;
 $L__tmp26:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1205, %r1204, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1206, %r1178, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1208, %r1207, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1209, %r1181, 16, 31, -1;
 $L__tmp27:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1207, %r1178, %r1206;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1210, %r1181, %r1209;
 $L__tmp28:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1208, %r1207, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1211, %r1210, 8, 31, -1;
 $L__tmp29:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1209, %r1207, %r1208;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1212, %r1210, %r1211;
 $L__tmp30:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1210, %r1209, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1213, %r1212, 4, 31, -1;
 $L__tmp31:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1211, %r1209, %r1210;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1214, %r1212, %r1213;
 $L__tmp32:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1212, %r1211, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1215, %r1214, 2, 31, -1;
 $L__tmp33:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1213, %r1211, %r1212;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1216, %r1214, %r1215;
 $L__tmp34:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:46:61 ]
-	shfl.sync.bfly.b32 	%r1214, %r1213, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:59 ]
+	shfl.sync.bfly.b32 	%r1217, %r1216, 1, 31, -1;
 $L__tmp35:
-	.loc	1 47 40                         // router_kernels.py:47:40
+	.loc	1 48 40                         // router_kernels.py:48:40
 	add.s64 	%rd83, %rd51, %rd80;
-	.loc	1 47 53                         // router_kernels.py:47:53
+	.loc	1 48 51                         // router_kernels.py:48:51
 	add.s64 	%rd34, %rd83, %rd82;
-	.loc	1 47 30                         // router_kernels.py:47:30
+	.loc	1 48 30                         // router_kernels.py:48:30
 	// begin inline asm
 	mov.u32 %r518, 0x0;
 	ld.global.b32 { %r518 }, [ %rd34 + 0 ];
 	// end inline asm
-	.loc	1 47 22                         // router_kernels.py:47:22
+	.loc	1 48 22                         // router_kernels.py:48:22
 	bar.sync 	0;
-	st.shared.b32 	[%r1151], %r518;
+	st.shared.b32 	[%r1154], %r518;
 	bar.sync 	0;
-	ld.shared.b32 	%r1215, [%r1152];
-	ld.shared.b32 	%r1216, [%r1155+128];
-	ld.shared.b32 	%r1217, [%r1158+256];
-	ld.shared.b32 	%r1218, [%r1161+384];
-	mul.f32 	%r1219, %r1130, %r1216;
-	mul.f32 	%r1220, %r1134, %r1216;
-	mul.f32 	%r1221, %r1138, %r1216;
-	mul.f32 	%r1222, %r1142, %r1216;
+	ld.shared.b32 	%r1218, [%r1155];
+	ld.shared.b32 	%r1219, [%r1158+128];
+	ld.shared.b32 	%r1220, [%r1161+256];
+	ld.shared.b32 	%r1221, [%r1164+384];
+	mul.f32 	%r1222, %r1133, %r1219;
+	mul.f32 	%r1223, %r1137, %r1219;
+	mul.f32 	%r1224, %r1141, %r1219;
+	mul.f32 	%r1225, %r1145, %r1219;
 $L__tmp36:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	fma.rn.f32 	%r1223, %r1129, %r1215, %r1219;
-	fma.rn.f32 	%r1224, %r1131, %r1217, %r1223;
-	fma.rn.f32 	%r1225, %r1132, %r1218, %r1224;
-	fma.rn.f32 	%r1226, %r1133, %r1215, %r1220;
-	fma.rn.f32 	%r1227, %r1135, %r1217, %r1226;
-	fma.rn.f32 	%r1228, %r1136, %r1218, %r1227;
-	fma.rn.f32 	%r1229, %r1137, %r1215, %r1221;
-	fma.rn.f32 	%r1230, %r1139, %r1217, %r1229;
-	fma.rn.f32 	%r1231, %r1140, %r1218, %r1230;
-	fma.rn.f32 	%r1232, %r1141, %r1215, %r1222;
-	fma.rn.f32 	%r1233, %r1143, %r1217, %r1232;
-	fma.rn.f32 	%r1234, %r1144, %r1218, %r1233;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	fma.rn.f32 	%r1226, %r1132, %r1218, %r1222;
+	fma.rn.f32 	%r1227, %r1134, %r1220, %r1226;
+	fma.rn.f32 	%r1228, %r1135, %r1221, %r1227;
+	fma.rn.f32 	%r1229, %r1136, %r1218, %r1223;
+	fma.rn.f32 	%r1230, %r1138, %r1220, %r1229;
+	fma.rn.f32 	%r1231, %r1139, %r1221, %r1230;
+	fma.rn.f32 	%r1232, %r1140, %r1218, %r1224;
+	fma.rn.f32 	%r1233, %r1142, %r1220, %r1232;
+	fma.rn.f32 	%r1234, %r1143, %r1221, %r1233;
+	fma.rn.f32 	%r1235, %r1144, %r1218, %r1225;
+	fma.rn.f32 	%r1236, %r1146, %r1220, %r1235;
+	fma.rn.f32 	%r1237, %r1147, %r1221, %r1236;
 $L__tmp37:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1235, %r1225, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1238, %r1228, 16, 31, -1;
 $L__tmp38:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1236, %r1225, %r1235;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1239, %r1228, %r1238;
 $L__tmp39:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1237, %r1236, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1240, %r1239, 8, 31, -1;
 $L__tmp40:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1238, %r1236, %r1237;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1241, %r1239, %r1240;
 $L__tmp41:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1239, %r1238, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1242, %r1241, 4, 31, -1;
 $L__tmp42:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1240, %r1238, %r1239;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1243, %r1241, %r1242;
 $L__tmp43:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1241, %r1240, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1244, %r1243, 2, 31, -1;
 $L__tmp44:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1242, %r1240, %r1241;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1245, %r1243, %r1244;
 $L__tmp45:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1243, %r1242, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1246, %r1245, 1, 31, -1;
 $L__tmp46:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1244, %r1242, %r1243;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1247, %r1245, %r1246;
 $L__tmp47:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1245, %r1228, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1248, %r1231, 16, 31, -1;
 $L__tmp48:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1246, %r1228, %r1245;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1249, %r1231, %r1248;
 $L__tmp49:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1247, %r1246, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1250, %r1249, 8, 31, -1;
 $L__tmp50:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1248, %r1246, %r1247;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1251, %r1249, %r1250;
 $L__tmp51:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1249, %r1248, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1252, %r1251, 4, 31, -1;
 $L__tmp52:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1250, %r1248, %r1249;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1253, %r1251, %r1252;
 $L__tmp53:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1251, %r1250, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1254, %r1253, 2, 31, -1;
 $L__tmp54:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1252, %r1250, %r1251;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1255, %r1253, %r1254;
 $L__tmp55:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1253, %r1252, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1256, %r1255, 1, 31, -1;
 $L__tmp56:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1254, %r1252, %r1253;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1257, %r1255, %r1256;
 $L__tmp57:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1255, %r1231, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1258, %r1234, 16, 31, -1;
 $L__tmp58:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1256, %r1231, %r1255;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1259, %r1234, %r1258;
 $L__tmp59:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1257, %r1256, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1260, %r1259, 8, 31, -1;
 $L__tmp60:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1258, %r1256, %r1257;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1261, %r1259, %r1260;
 $L__tmp61:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1259, %r1258, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1262, %r1261, 4, 31, -1;
 $L__tmp62:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1260, %r1258, %r1259;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1263, %r1261, %r1262;
 $L__tmp63:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1261, %r1260, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1264, %r1263, 2, 31, -1;
 $L__tmp64:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1262, %r1260, %r1261;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1265, %r1263, %r1264;
 $L__tmp65:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1263, %r1262, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1266, %r1265, 1, 31, -1;
 $L__tmp66:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1264, %r1262, %r1263;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1267, %r1265, %r1266;
 $L__tmp67:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1265, %r1234, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1268, %r1237, 16, 31, -1;
 $L__tmp68:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1266, %r1234, %r1265;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1269, %r1237, %r1268;
 $L__tmp69:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1267, %r1266, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1270, %r1269, 8, 31, -1;
 $L__tmp70:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1268, %r1266, %r1267;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1271, %r1269, %r1270;
 $L__tmp71:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1269, %r1268, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1272, %r1271, 4, 31, -1;
 $L__tmp72:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1270, %r1268, %r1269;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1273, %r1271, %r1272;
 $L__tmp73:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1271, %r1270, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1274, %r1273, 2, 31, -1;
 $L__tmp74:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1272, %r1270, %r1271;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1275, %r1273, %r1274;
 $L__tmp75:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:47:66 ]
-	shfl.sync.bfly.b32 	%r1273, %r1272, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:48:64 ]
+	shfl.sync.bfly.b32 	%r1276, %r1275, 1, 31, -1;
 $L__tmp76:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:66 ] ]
-	add.f32 	%r1274, %r1272, %r1273;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:48:64 ] ]
+	add.f32 	%r1277, %r1275, %r1276;
 $L__tmp77:
-	.loc	1 47 76                         // router_kernels.py:47:76
-	mul.f32 	%r1275, %r1128, %r1128;
-	.loc	1 48 46                         // router_kernels.py:48:46
-	fma.rn.f32 	%r1276, %r1275, %r1244, 0f358637BD;
-	fma.rn.f32 	%r1277, %r1275, %r1254, 0f358637BD;
-	fma.rn.f32 	%r1278, %r1275, %r1264, 0f358637BD;
-	fma.rn.f32 	%r1279, %r1275, %r1274, 0f358637BD;
-	.loc	1 48 40                         // router_kernels.py:48:40
-	sqrt.approx.ftz.f32 	%r1280, %r1276;
-	sqrt.approx.ftz.f32 	%r1281, %r1277;
-	sqrt.approx.ftz.f32 	%r1282, %r1278;
+	.loc	1 48 74                         // router_kernels.py:48:74
+	mul.f32 	%r1278, %r1131, %r1131;
+	.loc	1 49 46                         // router_kernels.py:49:46
+	fma.rn.f32 	%r1279, %r1278, %r1247, 0f358637BD;
+	fma.rn.f32 	%r1280, %r1278, %r1257, 0f358637BD;
+	fma.rn.f32 	%r1281, %r1278, %r1267, 0f358637BD;
+	fma.rn.f32 	%r1282, %r1278, %r1277, 0f358637BD;
+	.loc	1 49 40                         // router_kernels.py:49:40
 	sqrt.approx.ftz.f32 	%r1283, %r1279;
-	.loc	1 45 13                         // router_kernels.py:45:13
-	mul.f32 	%r582, %r1055, %r1055;
-	mul.f32 	%r581, %r1054, %r1054;
-	mul.f32 	%r580, %r1053, %r1053;
-	mul.f32 	%r579, %r1052, %r1052;
-	mul.f32 	%r578, %r1037, %r1037;
-	mul.f32 	%r577, %r1036, %r1036;
-	mul.f32 	%r576, %r1035, %r1035;
-	mul.f32 	%r575, %r1034, %r1034;
-	mul.f32 	%r574, %r1019, %r1019;
-	mul.f32 	%r573, %r1018, %r1018;
-	mul.f32 	%r572, %r1017, %r1017;
-	mul.f32 	%r571, %r1016, %r1016;
-	mul.f32 	%r570, %r1001, %r1001;
-	mul.f32 	%r569, %r1000, %r1000;
-	mul.f32 	%r568, %r999, %r999;
-	mul.f32 	%r567, %r998, %r998;
-	mul.f32 	%r566, %r1051, %r1051;
-	mul.f32 	%r565, %r1050, %r1050;
-	mul.f32 	%r564, %r1049, %r1049;
-	mul.f32 	%r563, %r1048, %r1048;
-	mul.f32 	%r562, %r1033, %r1033;
-	mul.f32 	%r561, %r1032, %r1032;
-	mul.f32 	%r560, %r1031, %r1031;
-	mul.f32 	%r559, %r1030, %r1030;
-	mul.f32 	%r558, %r1015, %r1015;
-	mul.f32 	%r557, %r1014, %r1014;
-	mul.f32 	%r556, %r1013, %r1013;
-	mul.f32 	%r555, %r1012, %r1012;
-	mul.f32 	%r554, %r997, %r997;
-	mul.f32 	%r553, %r996, %r996;
-	mul.f32 	%r552, %r995, %r995;
-	mul.f32 	%r551, %r994, %r994;
-	mul.f32 	%r550, %r1047, %r1047;
-	mul.f32 	%r549, %r1046, %r1046;
-	mul.f32 	%r548, %r1045, %r1045;
-	mul.f32 	%r547, %r1044, %r1044;
-	mul.f32 	%r546, %r1029, %r1029;
-	mul.f32 	%r545, %r1028, %r1028;
-	mul.f32 	%r544, %r1027, %r1027;
-	mul.f32 	%r543, %r1026, %r1026;
-	mul.f32 	%r542, %r1011, %r1011;
-	mul.f32 	%r541, %r1010, %r1010;
-	mul.f32 	%r540, %r1009, %r1009;
-	mul.f32 	%r539, %r1008, %r1008;
-	mul.f32 	%r538, %r993, %r993;
-	mul.f32 	%r537, %r992, %r992;
-	mul.f32 	%r536, %r991, %r991;
-	mul.f32 	%r535, %r990, %r990;
-	mul.f32 	%r534, %r1043, %r1043;
-	mul.f32 	%r533, %r1042, %r1042;
-	mul.f32 	%r532, %r1041, %r1041;
-	mul.f32 	%r531, %r1040, %r1040;
-	mul.f32 	%r530, %r1025, %r1025;
-	mul.f32 	%r529, %r1024, %r1024;
-	mul.f32 	%r528, %r1023, %r1023;
-	mul.f32 	%r527, %r1022, %r1022;
-	mul.f32 	%r526, %r1007, %r1007;
-	mul.f32 	%r525, %r1006, %r1006;
-	mul.f32 	%r524, %r1005, %r1005;
-	mul.f32 	%r523, %r1004, %r1004;
-	mul.f32 	%r522, %r989, %r989;
-	mul.f32 	%r521, %r988, %r988;
-	mul.f32 	%r520, %r987, %r987;
-	mul.f32 	%r519, %r986, %r986;
+	sqrt.approx.ftz.f32 	%r1284, %r1280;
+	sqrt.approx.ftz.f32 	%r1285, %r1281;
+	sqrt.approx.ftz.f32 	%r1286, %r1282;
+	.loc	1 46 13                         // router_kernels.py:46:13
+	mul.f32 	%r582, %r1057, %r1057;
+	mul.f32 	%r581, %r1056, %r1056;
+	mul.f32 	%r580, %r1055, %r1055;
+	mul.f32 	%r579, %r1054, %r1054;
+	mul.f32 	%r578, %r1039, %r1039;
+	mul.f32 	%r577, %r1038, %r1038;
+	mul.f32 	%r576, %r1037, %r1037;
+	mul.f32 	%r575, %r1036, %r1036;
+	mul.f32 	%r574, %r1021, %r1021;
+	mul.f32 	%r573, %r1020, %r1020;
+	mul.f32 	%r572, %r1019, %r1019;
+	mul.f32 	%r571, %r1018, %r1018;
+	mul.f32 	%r570, %r1003, %r1003;
+	mul.f32 	%r569, %r1002, %r1002;
+	mul.f32 	%r568, %r1001, %r1001;
+	mul.f32 	%r567, %r1000, %r1000;
+	mul.f32 	%r566, %r1053, %r1053;
+	mul.f32 	%r565, %r1052, %r1052;
+	mul.f32 	%r564, %r1051, %r1051;
+	mul.f32 	%r563, %r1050, %r1050;
+	mul.f32 	%r562, %r1035, %r1035;
+	mul.f32 	%r561, %r1034, %r1034;
+	mul.f32 	%r560, %r1033, %r1033;
+	mul.f32 	%r559, %r1032, %r1032;
+	mul.f32 	%r558, %r1017, %r1017;
+	mul.f32 	%r557, %r1016, %r1016;
+	mul.f32 	%r556, %r1015, %r1015;
+	mul.f32 	%r555, %r1014, %r1014;
+	mul.f32 	%r554, %r999, %r999;
+	mul.f32 	%r553, %r998, %r998;
+	mul.f32 	%r552, %r997, %r997;
+	mul.f32 	%r551, %r996, %r996;
+	mul.f32 	%r550, %r1049, %r1049;
+	mul.f32 	%r549, %r1048, %r1048;
+	mul.f32 	%r548, %r1047, %r1047;
+	mul.f32 	%r547, %r1046, %r1046;
+	mul.f32 	%r546, %r1031, %r1031;
+	mul.f32 	%r545, %r1030, %r1030;
+	mul.f32 	%r544, %r1029, %r1029;
+	mul.f32 	%r543, %r1028, %r1028;
+	mul.f32 	%r542, %r1013, %r1013;
+	mul.f32 	%r541, %r1012, %r1012;
+	mul.f32 	%r540, %r1011, %r1011;
+	mul.f32 	%r539, %r1010, %r1010;
+	mul.f32 	%r538, %r995, %r995;
+	mul.f32 	%r537, %r994, %r994;
+	mul.f32 	%r536, %r993, %r993;
+	mul.f32 	%r535, %r992, %r992;
+	mul.f32 	%r534, %r1045, %r1045;
+	mul.f32 	%r533, %r1044, %r1044;
+	mul.f32 	%r532, %r1043, %r1043;
+	mul.f32 	%r531, %r1042, %r1042;
+	mul.f32 	%r530, %r1027, %r1027;
+	mul.f32 	%r529, %r1026, %r1026;
+	mul.f32 	%r528, %r1025, %r1025;
+	mul.f32 	%r527, %r1024, %r1024;
+	mul.f32 	%r526, %r1009, %r1009;
+	mul.f32 	%r525, %r1008, %r1008;
+	mul.f32 	%r524, %r1007, %r1007;
+	mul.f32 	%r523, %r1006, %r1006;
+	mul.f32 	%r522, %r991, %r991;
+	mul.f32 	%r521, %r990, %r990;
+	mul.f32 	%r520, %r989, %r989;
+	mul.f32 	%r519, %r988, %r988;
 	.loc	1 35 46                         // router_kernels.py:35:46
-	bfe.s32 	%r1284, %r924, 6, 1;
-	bfe.u32 	%r1285, %r924, 6, 1;
+	bfe.s32 	%r1287, %r924, 6, 1;
+	bfe.u32 	%r1288, %r924, 6, 1;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1286, %r923, %r1285;
-	or.b32 	%r1287, %r1286, 14;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p33, %r1287, %r930;
+	or.b32 	%r1289, %r923, %r1288;
+	or.b32 	%r1290, %r1289, 14;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p33, %r1290, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1288, %r1286, 12;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p34, %r1288, %r930;
+	or.b32 	%r1291, %r1289, 12;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p34, %r1291, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1289, %r1286, 10;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p35, %r1289, %r930;
+	or.b32 	%r1292, %r1289, 10;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p35, %r1292, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1290, %r1286, 8;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p36, %r1290, %r930;
+	or.b32 	%r1293, %r1289, 8;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p36, %r1293, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1291, %r1286, 6;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p37, %r1291, %r930;
+	or.b32 	%r1294, %r1289, 6;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p37, %r1294, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1292, %r1286, 4;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p38, %r1292, %r930;
+	or.b32 	%r1295, %r1289, 4;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p38, %r1295, %r930;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1293, %r1286, 2;
-	.loc	1 39 79                         // router_kernels.py:39:79
-	setp.lt.s32 	%p39, %r1293, %r930;
-	setp.lt.s32 	%p40, %r1286, %r930;
-	.loc	1 39 32                         // router_kernels.py:39:32
-	add.s32 	%r1294, %r957, %r1287;
-	add.s32 	%r1295, %r957, %r1288;
-	add.s32 	%r1296, %r957, %r1289;
-	add.s32 	%r1297, %r957, %r1290;
-	add.s32 	%r1298, %r957, %r1291;
-	add.s32 	%r1299, %r957, %r1292;
-	add.s32 	%r1300, %r957, %r1293;
-	add.s32 	%r1301, %r957, %r1286;
+	or.b32 	%r1296, %r1289, 2;
+	.loc	1 40 79                         // router_kernels.py:40:79
+	setp.lt.s32 	%p39, %r1296, %r930;
+	setp.lt.s32 	%p40, %r1289, %r930;
+	.loc	1 40 32                         // router_kernels.py:40:32
+	add.s32 	%r1297, %r959, %r1290;
+	add.s32 	%r1298, %r959, %r1291;
+	add.s32 	%r1299, %r959, %r1292;
+	add.s32 	%r1300, %r959, %r1293;
+	add.s32 	%r1301, %r959, %r1294;
+	add.s32 	%r1302, %r959, %r1295;
+	add.s32 	%r1303, %r959, %r1296;
+	add.s32 	%r1304, %r959, %r1289;
 	.loc	1 36 46                         // router_kernels.py:36:46
-	and.b32 	%r1302, %r924, 63;
+	and.b32 	%r1305, %r924, 63;
 	.loc	1 36 33                         // router_kernels.py:36:33
-	or.b32 	%r1303, %r937, %r1302;
+	or.b32 	%r1306, %r937, %r1305;
 	.loc	1 35 46                         // router_kernels.py:35:46
-	bfe.u32 	%r1304, %r924, 2, 3;
+	bfe.u32 	%r1307, %r924, 2, 3;
 	.loc	1 34 17                         // router_kernels.py:34:17
-	cvt.rn.f32.f64 	%r1305, %rd55;
+	cvt.rn.f32.f64 	%r1308, %rd55;
 $L__tmp78:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:46:61 ] ]
-	add.f32 	%r1306, %r1213, %r1214;
-	add.f32 	%r1307, %r1204, %r1205;
-	add.f32 	%r1308, %r1195, %r1196;
-	add.f32 	%r1309, %r1186, %r1187;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:47:59 ] ]
+	add.f32 	%r1309, %r1216, %r1217;
+	add.f32 	%r1310, %r1207, %r1208;
+	add.f32 	%r1311, %r1198, %r1199;
+	add.f32 	%r1312, %r1189, %r1190;
 $L__tmp79:
-	.loc	1 48 32                         // router_kernels.py:48:32
-	mul.f32 	%r1310, %r1283, %r1305;
-	mul.f32 	%r1311, %r1282, %r1305;
-	mul.f32 	%r1312, %r1281, %r1305;
-	mul.f32 	%r1313, %r1280, %r1305;
-	.loc	1 48 26                         // router_kernels.py:48:26
-	fma.rn.f32 	%r1314, %r1128, %r1309, %r1313;
-	fma.rn.f32 	%r1315, %r1128, %r1308, %r1312;
-	fma.rn.f32 	%r1316, %r1128, %r1307, %r1311;
-	fma.rn.f32 	%r1317, %r1128, %r1306, %r1310;
-	.loc	1 48 20                         // router_kernels.py:48:20
-	bar.sync 	0;
-	add.s32 	%r1318, %r972, %r974;
-	st.shared.v4.b32 	[%r1318], {%r1314, %r1316, %r1315, %r1317};
-	bar.sync 	0;
-	and.b32 	%r1319, %r966, 48;
-	shr.u32 	%r1320, %r982, 1;
-	add.s32 	%r1321, %r972, %r1320;
-	add.s32 	%r1322, %r1321, %r1319;
+	.loc	1 49 32                         // router_kernels.py:49:32
+	mul.f32 	%r1313, %r1286, %r1308;
+	mul.f32 	%r1314, %r1285, %r1308;
+	mul.f32 	%r1315, %r1284, %r1308;
+	mul.f32 	%r1316, %r1283, %r1308;
+	.loc	1 49 26                         // router_kernels.py:49:26
+	fma.rn.f32 	%r1317, %r1131, %r1312, %r1316;
+	fma.rn.f32 	%r1318, %r1131, %r1311, %r1315;
+	fma.rn.f32 	%r1319, %r1131, %r1310, %r1314;
+	fma.rn.f32 	%r1320, %r1131, %r1309, %r1313;
 	.loc	1 49 20                         // router_kernels.py:49:20
-	setp.ge.s32 	%p41, %r952, %r934;
-	setp.ge.s32 	%p42, %r953, %r934;
-	.loc	1 49 35                         // router_kernels.py:49:35
-	setp.lt.s32 	%p43, %r952, %r935;
-	setp.lt.s32 	%p44, %r953, %r935;
-	setp.lt.s32 	%p45, %r954, %r935;
-	setp.lt.s32 	%p46, %r955, %r935;
-	.loc	1 49 30                         // router_kernels.py:49:30
+	bar.sync 	0;
+	add.s32 	%r1321, %r974, %r976;
+	st.shared.v4.b32 	[%r1321], {%r1317, %r1319, %r1318, %r1320};
+	bar.sync 	0;
+	and.b32 	%r1322, %r968, 48;
+	shr.u32 	%r1323, %r984, 1;
+	add.s32 	%r1324, %r974, %r1323;
+	add.s32 	%r1325, %r1324, %r1322;
+	.loc	1 50 20                         // router_kernels.py:50:20
+	setp.ge.s32 	%p41, %r953, %r934;
+	setp.ge.s32 	%p42, %r954, %r934;
+	.loc	1 50 35                         // router_kernels.py:50:35
+	setp.lt.s32 	%p43, %r953, %r935;
+	setp.lt.s32 	%p44, %r954, %r935;
+	setp.lt.s32 	%p45, %r955, %r935;
+	setp.lt.s32 	%p46, %r956, %r935;
+	.loc	1 50 30                         // router_kernels.py:50:30
 	and.pred 	%p47, %p41, %p43;
 	and.pred 	%p48, %p42, %p44;
-	.loc	1 50 16                         // router_kernels.py:50:16
-	mul.f32 	%r1323, %r921, 0f3F000000;
-	.loc	1 50 24                         // router_kernels.py:50:24
-	mul.f32 	%r1324, %r1323, %r921;
-	.loc	1 50 32                         // router_kernels.py:50:32
-	mul.f32 	%r1325, %r1324, 0f3FB8AA3B;
-	.loc	1 53 34                         // router_kernels.py:53:34
-	mad.wide.u32 	%rd35, %r956, 4, %rd53;
-	.loc	1 53 78                         // router_kernels.py:53:78
+	.loc	1 51 16                         // router_kernels.py:51:16
+	mul.f32 	%r1326, %r921, 0f3F000000;
+	.loc	1 51 24                         // router_kernels.py:51:24
+	mul.f32 	%r1327, %r1326, %r921;
+	.loc	1 51 32                         // router_kernels.py:51:32
+	mul.f32 	%r1328, %r1327, 0f3FB8AA3B;
+	.loc	1 54 34                         // router_kernels.py:54:34
+	mad.wide.s32 	%rd35, %r958, 4, %rd53;
+	.loc	1 54 76                         // router_kernels.py:54:76
 	add.s64 	%rd84, %rd52, %rd80;
-	.loc	1 53 91                         // router_kernels.py:53:91
+	.loc	1 54 87                         // router_kernels.py:54:87
 	add.s64 	%rd36, %rd84, %rd82;
-	.loc	1 55 48                         // router_kernels.py:55:48
-	mul.lo.s32 	%r1326, %r1301, %r930;
-	mul.lo.s32 	%r1327, %r1300, %r930;
-	mul.lo.s32 	%r1328, %r1299, %r930;
-	mul.lo.s32 	%r1329, %r1298, %r930;
-	mul.lo.s32 	%r1330, %r1297, %r930;
-	mul.lo.s32 	%r1331, %r1296, %r930;
-	mul.lo.s32 	%r1332, %r1295, %r930;
-	mul.lo.s32 	%r1333, %r1294, %r930;
-	.loc	1 55 21                         // router_kernels.py:55:21
-	cvt.s64.s32 	%rd85, %r1326;
+	.loc	1 56 48                         // router_kernels.py:56:48
+	mul.lo.s32 	%r1329, %r1304, %r930;
+	mul.lo.s32 	%r1330, %r1303, %r930;
+	mul.lo.s32 	%r1331, %r1302, %r930;
+	mul.lo.s32 	%r1332, %r1301, %r930;
+	mul.lo.s32 	%r1333, %r1300, %r930;
+	mul.lo.s32 	%r1334, %r1299, %r930;
+	mul.lo.s32 	%r1335, %r1298, %r930;
+	mul.lo.s32 	%r1336, %r1297, %r930;
+	.loc	1 56 21                         // router_kernels.py:56:21
+	cvt.s64.s32 	%rd85, %r1329;
 	add.s64 	%rd86, %rd54, %rd85;
-	cvt.s64.s32 	%rd87, %r1327;
+	cvt.s64.s32 	%rd87, %r1330;
 	add.s64 	%rd88, %rd54, %rd87;
-	cvt.s64.s32 	%rd89, %r1328;
+	cvt.s64.s32 	%rd89, %r1331;
 	add.s64 	%rd90, %rd54, %rd89;
-	cvt.s64.s32 	%rd91, %r1329;
+	cvt.s64.s32 	%rd91, %r1332;
 	add.s64 	%rd92, %rd54, %rd91;
-	cvt.s64.s32 	%rd93, %r1330;
+	cvt.s64.s32 	%rd93, %r1333;
 	add.s64 	%rd94, %rd54, %rd93;
-	cvt.s64.s32 	%rd95, %r1331;
+	cvt.s64.s32 	%rd95, %r1334;
 	add.s64 	%rd96, %rd54, %rd95;
-	cvt.s64.s32 	%rd97, %r1332;
+	cvt.s64.s32 	%rd97, %r1335;
 	add.s64 	%rd98, %rd54, %rd97;
-	cvt.s64.s32 	%rd99, %r1333;
+	cvt.s64.s32 	%rd99, %r1336;
 	add.s64 	%rd100, %rd54, %rd99;
-	.loc	1 55 52                         // router_kernels.py:55:52
-	cvt.u64.u32 	%rd101, %r1303;
+	.loc	1 56 52                         // router_kernels.py:56:52
+	cvt.u64.u32 	%rd101, %r1306;
 	add.s64 	%rd37, %rd86, %rd101;
 	add.s64 	%rd38, %rd88, %rd101;
 	add.s64 	%rd39, %rd90, %rd101;
@@ -2065,9 +2071,9 @@ $L__tmp79:
 	add.s64 	%rd42, %rd96, %rd101;
 	add.s64 	%rd43, %rd98, %rd101;
 	add.s64 	%rd44, %rd100, %rd101;
-	.loc	1 55 107                        // router_kernels.py:55:107
-	setp.lt.s32 	%p49, %r1303, %r930;
-	.loc	1 55 93                         // router_kernels.py:55:93
+	.loc	1 56 107                        // router_kernels.py:56:107
+	setp.lt.s32 	%p49, %r1306, %r930;
+	.loc	1 56 93                         // router_kernels.py:56:93
 	and.pred 	%p17, %p40, %p49;
 	and.pred 	%p18, %p39, %p49;
 	and.pred 	%p19, %p38, %p49;
@@ -2076,348 +2082,348 @@ $L__tmp79:
 	and.pred 	%p22, %p35, %p49;
 	and.pred 	%p23, %p34, %p49;
 	and.pred 	%p24, %p33, %p49;
-	.loc	1 44 22                         // router_kernels.py:44:22
-	add.f32 	%r1334, %r509, 0f00000000;
-	add.f32 	%r1335, %r511, 0f00000000;
-	add.f32 	%r1336, %r513, 0f00000000;
-	add.f32 	%r1337, %r515, 0f00000000;
-	.loc	1 44 63                         // router_kernels.py:44:63
-	mul.f32 	%r1338, %r1128, %r1337;
-	mul.f32 	%r1339, %r1128, %r1336;
-	mul.f32 	%r1340, %r1128, %r1335;
-	mul.f32 	%r1341, %r1128, %r1334;
-	.loc	1 48 20                         // router_kernels.py:48:20
-	ld.shared.v2.b32 	{%r1342, %r1343}, [%r1322];
-	setp.gt.f32 	%p50, %r1341, %r1342;
-	setp.gt.f32 	%p51, %r1340, %r1343;
-	setp.gt.f32 	%p52, %r1339, %r1342;
-	setp.gt.f32 	%p53, %r1338, %r1343;
-	.loc	1 51 19                         // router_kernels.py:51:19
-	fma.rn.f32 	%r1344, %r1128, %r1334, %r113;
-	fma.rn.f32 	%r1345, %r1128, %r1335, %r113;
-	fma.rn.f32 	%r1346, %r1128, %r1336, %r115;
-	fma.rn.f32 	%r1347, %r1128, %r1337, %r115;
-	.loc	1 51 52                         // router_kernels.py:51:52
+	.loc	1 45 22                         // router_kernels.py:45:22
+	add.f32 	%r1337, %r509, 0f00000000;
+	add.f32 	%r1338, %r511, 0f00000000;
+	add.f32 	%r1339, %r513, 0f00000000;
+	add.f32 	%r1340, %r515, 0f00000000;
+	.loc	1 45 63                         // router_kernels.py:45:63
+	mul.f32 	%r1341, %r1131, %r1340;
+	mul.f32 	%r1342, %r1131, %r1339;
+	mul.f32 	%r1343, %r1131, %r1338;
+	mul.f32 	%r1344, %r1131, %r1337;
+	.loc	1 49 20                         // router_kernels.py:49:20
+	ld.shared.v2.b32 	{%r1345, %r1346}, [%r1325];
+	setp.gt.f32 	%p50, %r1344, %r1345;
+	setp.gt.f32 	%p51, %r1343, %r1346;
+	setp.gt.f32 	%p52, %r1342, %r1345;
+	setp.gt.f32 	%p53, %r1341, %r1346;
+	.loc	1 52 19                         // router_kernels.py:52:19
+	fma.rn.f32 	%r1347, %r1131, %r1337, %r113;
+	fma.rn.f32 	%r1348, %r1131, %r1338, %r113;
+	fma.rn.f32 	%r1349, %r1131, %r1339, %r115;
+	fma.rn.f32 	%r1350, %r1131, %r1340, %r115;
+	.loc	1 52 52                         // router_kernels.py:52:52
 	// begin inline asm
 	cvt.rna.tf32.f32 %r783, %r519;
 	// end inline asm
-	xor.b32 	%r1348, %r783, -2147483648;
+	xor.b32 	%r1351, %r783, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r784, %r520;
 	// end inline asm
-	xor.b32 	%r1349, %r784, -2147483648;
+	xor.b32 	%r1352, %r784, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r785, %r521;
 	// end inline asm
-	xor.b32 	%r1350, %r785, -2147483648;
+	xor.b32 	%r1353, %r785, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r786, %r522;
 	// end inline asm
-	xor.b32 	%r1351, %r786, -2147483648;
+	xor.b32 	%r1354, %r786, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r791, %r523;
 	// end inline asm
-	xor.b32 	%r1352, %r791, -2147483648;
+	xor.b32 	%r1355, %r791, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r792, %r524;
 	// end inline asm
-	xor.b32 	%r1353, %r792, -2147483648;
+	xor.b32 	%r1356, %r792, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r793, %r525;
 	// end inline asm
-	xor.b32 	%r1354, %r793, -2147483648;
+	xor.b32 	%r1357, %r793, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r794, %r526;
 	// end inline asm
-	xor.b32 	%r1355, %r794, -2147483648;
+	xor.b32 	%r1358, %r794, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r799, %r527;
 	// end inline asm
-	xor.b32 	%r1356, %r799, -2147483648;
+	xor.b32 	%r1359, %r799, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r800, %r528;
 	// end inline asm
-	xor.b32 	%r1357, %r800, -2147483648;
+	xor.b32 	%r1360, %r800, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r801, %r529;
 	// end inline asm
-	xor.b32 	%r1358, %r801, -2147483648;
+	xor.b32 	%r1361, %r801, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r802, %r530;
 	// end inline asm
-	xor.b32 	%r1359, %r802, -2147483648;
+	xor.b32 	%r1362, %r802, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r807, %r531;
 	// end inline asm
-	xor.b32 	%r1360, %r807, -2147483648;
+	xor.b32 	%r1363, %r807, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r808, %r532;
 	// end inline asm
-	xor.b32 	%r1361, %r808, -2147483648;
+	xor.b32 	%r1364, %r808, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r809, %r533;
 	// end inline asm
-	xor.b32 	%r1362, %r809, -2147483648;
+	xor.b32 	%r1365, %r809, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r810, %r534;
 	// end inline asm
-	xor.b32 	%r1363, %r810, -2147483648;
+	xor.b32 	%r1366, %r810, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r815, %r535;
 	// end inline asm
-	xor.b32 	%r1364, %r815, -2147483648;
+	xor.b32 	%r1367, %r815, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r816, %r536;
 	// end inline asm
-	xor.b32 	%r1365, %r816, -2147483648;
+	xor.b32 	%r1368, %r816, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r817, %r537;
 	// end inline asm
-	xor.b32 	%r1366, %r817, -2147483648;
+	xor.b32 	%r1369, %r817, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r818, %r538;
 	// end inline asm
-	xor.b32 	%r1367, %r818, -2147483648;
+	xor.b32 	%r1370, %r818, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r823, %r539;
 	// end inline asm
-	xor.b32 	%r1368, %r823, -2147483648;
+	xor.b32 	%r1371, %r823, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r824, %r540;
 	// end inline asm
-	xor.b32 	%r1369, %r824, -2147483648;
+	xor.b32 	%r1372, %r824, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r825, %r541;
 	// end inline asm
-	xor.b32 	%r1370, %r825, -2147483648;
+	xor.b32 	%r1373, %r825, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r826, %r542;
 	// end inline asm
-	xor.b32 	%r1371, %r826, -2147483648;
+	xor.b32 	%r1374, %r826, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r831, %r543;
 	// end inline asm
-	xor.b32 	%r1372, %r831, -2147483648;
+	xor.b32 	%r1375, %r831, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r832, %r544;
 	// end inline asm
-	xor.b32 	%r1373, %r832, -2147483648;
+	xor.b32 	%r1376, %r832, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r833, %r545;
 	// end inline asm
-	xor.b32 	%r1374, %r833, -2147483648;
+	xor.b32 	%r1377, %r833, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r834, %r546;
 	// end inline asm
-	xor.b32 	%r1375, %r834, -2147483648;
+	xor.b32 	%r1378, %r834, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r839, %r547;
 	// end inline asm
-	xor.b32 	%r1376, %r839, -2147483648;
+	xor.b32 	%r1379, %r839, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r840, %r548;
 	// end inline asm
-	xor.b32 	%r1377, %r840, -2147483648;
+	xor.b32 	%r1380, %r840, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r841, %r549;
 	// end inline asm
-	xor.b32 	%r1378, %r841, -2147483648;
+	xor.b32 	%r1381, %r841, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r842, %r550;
 	// end inline asm
-	xor.b32 	%r1379, %r842, -2147483648;
+	xor.b32 	%r1382, %r842, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r847, %r551;
 	// end inline asm
-	xor.b32 	%r1380, %r847, -2147483648;
+	xor.b32 	%r1383, %r847, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r848, %r552;
 	// end inline asm
-	xor.b32 	%r1381, %r848, -2147483648;
+	xor.b32 	%r1384, %r848, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r849, %r553;
 	// end inline asm
-	xor.b32 	%r1382, %r849, -2147483648;
+	xor.b32 	%r1385, %r849, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r850, %r554;
 	// end inline asm
-	xor.b32 	%r1383, %r850, -2147483648;
+	xor.b32 	%r1386, %r850, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r855, %r555;
 	// end inline asm
-	xor.b32 	%r1384, %r855, -2147483648;
+	xor.b32 	%r1387, %r855, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r856, %r556;
 	// end inline asm
-	xor.b32 	%r1385, %r856, -2147483648;
+	xor.b32 	%r1388, %r856, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r857, %r557;
 	// end inline asm
-	xor.b32 	%r1386, %r857, -2147483648;
+	xor.b32 	%r1389, %r857, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r858, %r558;
 	// end inline asm
-	xor.b32 	%r1387, %r858, -2147483648;
+	xor.b32 	%r1390, %r858, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r863, %r559;
 	// end inline asm
-	xor.b32 	%r1388, %r863, -2147483648;
+	xor.b32 	%r1391, %r863, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r864, %r560;
 	// end inline asm
-	xor.b32 	%r1389, %r864, -2147483648;
+	xor.b32 	%r1392, %r864, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r865, %r561;
 	// end inline asm
-	xor.b32 	%r1390, %r865, -2147483648;
+	xor.b32 	%r1393, %r865, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r866, %r562;
 	// end inline asm
-	xor.b32 	%r1391, %r866, -2147483648;
+	xor.b32 	%r1394, %r866, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r871, %r563;
 	// end inline asm
-	xor.b32 	%r1392, %r871, -2147483648;
+	xor.b32 	%r1395, %r871, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r872, %r564;
 	// end inline asm
-	xor.b32 	%r1393, %r872, -2147483648;
+	xor.b32 	%r1396, %r872, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r873, %r565;
 	// end inline asm
-	xor.b32 	%r1394, %r873, -2147483648;
+	xor.b32 	%r1397, %r873, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r874, %r566;
 	// end inline asm
-	xor.b32 	%r1395, %r874, -2147483648;
+	xor.b32 	%r1398, %r874, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r879, %r567;
 	// end inline asm
-	xor.b32 	%r1396, %r879, -2147483648;
+	xor.b32 	%r1399, %r879, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r880, %r568;
 	// end inline asm
-	xor.b32 	%r1397, %r880, -2147483648;
+	xor.b32 	%r1400, %r880, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r881, %r569;
 	// end inline asm
-	xor.b32 	%r1398, %r881, -2147483648;
+	xor.b32 	%r1401, %r881, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r882, %r570;
 	// end inline asm
-	xor.b32 	%r1399, %r882, -2147483648;
+	xor.b32 	%r1402, %r882, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r887, %r571;
 	// end inline asm
-	xor.b32 	%r1400, %r887, -2147483648;
+	xor.b32 	%r1403, %r887, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r888, %r572;
 	// end inline asm
-	xor.b32 	%r1401, %r888, -2147483648;
+	xor.b32 	%r1404, %r888, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r889, %r573;
 	// end inline asm
-	xor.b32 	%r1402, %r889, -2147483648;
+	xor.b32 	%r1405, %r889, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r890, %r574;
 	// end inline asm
-	xor.b32 	%r1403, %r890, -2147483648;
+	xor.b32 	%r1406, %r890, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r895, %r575;
 	// end inline asm
-	xor.b32 	%r1404, %r895, -2147483648;
+	xor.b32 	%r1407, %r895, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r896, %r576;
 	// end inline asm
-	xor.b32 	%r1405, %r896, -2147483648;
+	xor.b32 	%r1408, %r896, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r897, %r577;
 	// end inline asm
-	xor.b32 	%r1406, %r897, -2147483648;
+	xor.b32 	%r1409, %r897, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r898, %r578;
 	// end inline asm
-	xor.b32 	%r1407, %r898, -2147483648;
+	xor.b32 	%r1410, %r898, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r903, %r579;
 	// end inline asm
-	xor.b32 	%r1408, %r903, -2147483648;
+	xor.b32 	%r1411, %r903, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r904, %r580;
 	// end inline asm
-	xor.b32 	%r1409, %r904, -2147483648;
+	xor.b32 	%r1412, %r904, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r905, %r581;
 	// end inline asm
-	xor.b32 	%r1410, %r905, -2147483648;
+	xor.b32 	%r1413, %r905, -2147483648;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r906, %r582;
 	// end inline asm
-	xor.b32 	%r1411, %r906, -2147483648;
-	fma.rn.f32 	%r649, %r986, %r986, %r1348;
-	fma.rn.f32 	%r650, %r987, %r987, %r1349;
-	fma.rn.f32 	%r651, %r988, %r988, %r1350;
-	fma.rn.f32 	%r652, %r989, %r989, %r1351;
-	fma.rn.f32 	%r665, %r1004, %r1004, %r1352;
-	fma.rn.f32 	%r666, %r1005, %r1005, %r1353;
-	fma.rn.f32 	%r667, %r1006, %r1006, %r1354;
-	fma.rn.f32 	%r668, %r1007, %r1007, %r1355;
-	fma.rn.f32 	%r673, %r1022, %r1022, %r1356;
-	fma.rn.f32 	%r674, %r1023, %r1023, %r1357;
-	fma.rn.f32 	%r675, %r1024, %r1024, %r1358;
-	fma.rn.f32 	%r676, %r1025, %r1025, %r1359;
-	fma.rn.f32 	%r681, %r1040, %r1040, %r1360;
-	fma.rn.f32 	%r682, %r1041, %r1041, %r1361;
-	fma.rn.f32 	%r683, %r1042, %r1042, %r1362;
-	fma.rn.f32 	%r684, %r1043, %r1043, %r1363;
-	fma.rn.f32 	%r689, %r990, %r990, %r1364;
-	fma.rn.f32 	%r690, %r991, %r991, %r1365;
-	fma.rn.f32 	%r691, %r992, %r992, %r1366;
-	fma.rn.f32 	%r692, %r993, %r993, %r1367;
-	fma.rn.f32 	%r697, %r1008, %r1008, %r1368;
-	fma.rn.f32 	%r698, %r1009, %r1009, %r1369;
-	fma.rn.f32 	%r699, %r1010, %r1010, %r1370;
-	fma.rn.f32 	%r700, %r1011, %r1011, %r1371;
-	fma.rn.f32 	%r705, %r1026, %r1026, %r1372;
-	fma.rn.f32 	%r706, %r1027, %r1027, %r1373;
-	fma.rn.f32 	%r707, %r1028, %r1028, %r1374;
-	fma.rn.f32 	%r708, %r1029, %r1029, %r1375;
-	fma.rn.f32 	%r713, %r1044, %r1044, %r1376;
-	fma.rn.f32 	%r714, %r1045, %r1045, %r1377;
-	fma.rn.f32 	%r715, %r1046, %r1046, %r1378;
-	fma.rn.f32 	%r716, %r1047, %r1047, %r1379;
-	fma.rn.f32 	%r721, %r994, %r994, %r1380;
-	fma.rn.f32 	%r722, %r995, %r995, %r1381;
-	fma.rn.f32 	%r723, %r996, %r996, %r1382;
-	fma.rn.f32 	%r724, %r997, %r997, %r1383;
-	fma.rn.f32 	%r729, %r1012, %r1012, %r1384;
-	fma.rn.f32 	%r730, %r1013, %r1013, %r1385;
-	fma.rn.f32 	%r731, %r1014, %r1014, %r1386;
-	fma.rn.f32 	%r732, %r1015, %r1015, %r1387;
-	fma.rn.f32 	%r737, %r1030, %r1030, %r1388;
-	fma.rn.f32 	%r738, %r1031, %r1031, %r1389;
-	fma.rn.f32 	%r739, %r1032, %r1032, %r1390;
-	fma.rn.f32 	%r740, %r1033, %r1033, %r1391;
-	fma.rn.f32 	%r745, %r1048, %r1048, %r1392;
-	fma.rn.f32 	%r746, %r1049, %r1049, %r1393;
-	fma.rn.f32 	%r747, %r1050, %r1050, %r1394;
-	fma.rn.f32 	%r748, %r1051, %r1051, %r1395;
-	fma.rn.f32 	%r753, %r998, %r998, %r1396;
-	fma.rn.f32 	%r754, %r999, %r999, %r1397;
-	fma.rn.f32 	%r755, %r1000, %r1000, %r1398;
-	fma.rn.f32 	%r756, %r1001, %r1001, %r1399;
-	fma.rn.f32 	%r761, %r1016, %r1016, %r1400;
-	fma.rn.f32 	%r762, %r1017, %r1017, %r1401;
-	fma.rn.f32 	%r763, %r1018, %r1018, %r1402;
-	fma.rn.f32 	%r764, %r1019, %r1019, %r1403;
-	fma.rn.f32 	%r769, %r1034, %r1034, %r1404;
-	fma.rn.f32 	%r770, %r1035, %r1035, %r1405;
-	fma.rn.f32 	%r771, %r1036, %r1036, %r1406;
-	fma.rn.f32 	%r772, %r1037, %r1037, %r1407;
-	fma.rn.f32 	%r777, %r1052, %r1052, %r1408;
-	fma.rn.f32 	%r778, %r1053, %r1053, %r1409;
-	fma.rn.f32 	%r779, %r1054, %r1054, %r1410;
-	fma.rn.f32 	%r780, %r1055, %r1055, %r1411;
+	xor.b32 	%r1414, %r906, -2147483648;
+	fma.rn.f32 	%r649, %r988, %r988, %r1351;
+	fma.rn.f32 	%r650, %r989, %r989, %r1352;
+	fma.rn.f32 	%r651, %r990, %r990, %r1353;
+	fma.rn.f32 	%r652, %r991, %r991, %r1354;
+	fma.rn.f32 	%r665, %r1006, %r1006, %r1355;
+	fma.rn.f32 	%r666, %r1007, %r1007, %r1356;
+	fma.rn.f32 	%r667, %r1008, %r1008, %r1357;
+	fma.rn.f32 	%r668, %r1009, %r1009, %r1358;
+	fma.rn.f32 	%r673, %r1024, %r1024, %r1359;
+	fma.rn.f32 	%r674, %r1025, %r1025, %r1360;
+	fma.rn.f32 	%r675, %r1026, %r1026, %r1361;
+	fma.rn.f32 	%r676, %r1027, %r1027, %r1362;
+	fma.rn.f32 	%r681, %r1042, %r1042, %r1363;
+	fma.rn.f32 	%r682, %r1043, %r1043, %r1364;
+	fma.rn.f32 	%r683, %r1044, %r1044, %r1365;
+	fma.rn.f32 	%r684, %r1045, %r1045, %r1366;
+	fma.rn.f32 	%r689, %r992, %r992, %r1367;
+	fma.rn.f32 	%r690, %r993, %r993, %r1368;
+	fma.rn.f32 	%r691, %r994, %r994, %r1369;
+	fma.rn.f32 	%r692, %r995, %r995, %r1370;
+	fma.rn.f32 	%r697, %r1010, %r1010, %r1371;
+	fma.rn.f32 	%r698, %r1011, %r1011, %r1372;
+	fma.rn.f32 	%r699, %r1012, %r1012, %r1373;
+	fma.rn.f32 	%r700, %r1013, %r1013, %r1374;
+	fma.rn.f32 	%r705, %r1028, %r1028, %r1375;
+	fma.rn.f32 	%r706, %r1029, %r1029, %r1376;
+	fma.rn.f32 	%r707, %r1030, %r1030, %r1377;
+	fma.rn.f32 	%r708, %r1031, %r1031, %r1378;
+	fma.rn.f32 	%r713, %r1046, %r1046, %r1379;
+	fma.rn.f32 	%r714, %r1047, %r1047, %r1380;
+	fma.rn.f32 	%r715, %r1048, %r1048, %r1381;
+	fma.rn.f32 	%r716, %r1049, %r1049, %r1382;
+	fma.rn.f32 	%r721, %r996, %r996, %r1383;
+	fma.rn.f32 	%r722, %r997, %r997, %r1384;
+	fma.rn.f32 	%r723, %r998, %r998, %r1385;
+	fma.rn.f32 	%r724, %r999, %r999, %r1386;
+	fma.rn.f32 	%r729, %r1014, %r1014, %r1387;
+	fma.rn.f32 	%r730, %r1015, %r1015, %r1388;
+	fma.rn.f32 	%r731, %r1016, %r1016, %r1389;
+	fma.rn.f32 	%r732, %r1017, %r1017, %r1390;
+	fma.rn.f32 	%r737, %r1032, %r1032, %r1391;
+	fma.rn.f32 	%r738, %r1033, %r1033, %r1392;
+	fma.rn.f32 	%r739, %r1034, %r1034, %r1393;
+	fma.rn.f32 	%r740, %r1035, %r1035, %r1394;
+	fma.rn.f32 	%r745, %r1050, %r1050, %r1395;
+	fma.rn.f32 	%r746, %r1051, %r1051, %r1396;
+	fma.rn.f32 	%r747, %r1052, %r1052, %r1397;
+	fma.rn.f32 	%r748, %r1053, %r1053, %r1398;
+	fma.rn.f32 	%r753, %r1000, %r1000, %r1399;
+	fma.rn.f32 	%r754, %r1001, %r1001, %r1400;
+	fma.rn.f32 	%r755, %r1002, %r1002, %r1401;
+	fma.rn.f32 	%r756, %r1003, %r1003, %r1402;
+	fma.rn.f32 	%r761, %r1018, %r1018, %r1403;
+	fma.rn.f32 	%r762, %r1019, %r1019, %r1404;
+	fma.rn.f32 	%r763, %r1020, %r1020, %r1405;
+	fma.rn.f32 	%r764, %r1021, %r1021, %r1406;
+	fma.rn.f32 	%r769, %r1036, %r1036, %r1407;
+	fma.rn.f32 	%r770, %r1037, %r1037, %r1408;
+	fma.rn.f32 	%r771, %r1038, %r1038, %r1409;
+	fma.rn.f32 	%r772, %r1039, %r1039, %r1410;
+	fma.rn.f32 	%r777, %r1054, %r1054, %r1411;
+	fma.rn.f32 	%r778, %r1055, %r1055, %r1412;
+	fma.rn.f32 	%r779, %r1056, %r1056, %r1413;
+	fma.rn.f32 	%r780, %r1057, %r1057, %r1414;
 	// begin inline asm
 	cvt.rna.tf32.f32 %r647, %r583;
 	// end inline asm
@@ -2985,322 +2991,322 @@ $L__tmp79:
 	// begin inline asm
 	mma.sync.aligned.m16n8k8.row.col.f32.tf32.tf32.f32 { %r915, %r916, %r917, %r918 }, { %r903, %r904, %r905, %r906 }, { %r781, %r782 }, { %r915, %r916, %r917, %r918 };
 	// end inline asm
-	add.f32 	%r1412, %r911, 0f00000000;
-	add.f32 	%r1413, %r913, 0f00000000;
-	add.f32 	%r1414, %r915, 0f00000000;
-	add.f32 	%r1415, %r917, 0f00000000;
-	.loc	1 51 35                         // router_kernels.py:51:35
-	fma.rn.f32 	%r1416, %r1325, %r1415, %r1347;
-	fma.rn.f32 	%r1417, %r1325, %r1414, %r1346;
-	fma.rn.f32 	%r1418, %r1325, %r1413, %r1345;
-	fma.rn.f32 	%r1419, %r1325, %r1412, %r1344;
-	.loc	1 53 23                         // router_kernels.py:53:23
+	add.f32 	%r1415, %r911, 0f00000000;
+	add.f32 	%r1416, %r913, 0f00000000;
+	add.f32 	%r1417, %r915, 0f00000000;
+	add.f32 	%r1418, %r917, 0f00000000;
+	.loc	1 52 35                         // router_kernels.py:52:35
+	fma.rn.f32 	%r1419, %r1328, %r1418, %r1350;
+	fma.rn.f32 	%r1420, %r1328, %r1417, %r1349;
+	fma.rn.f32 	%r1421, %r1328, %r1416, %r1348;
+	fma.rn.f32 	%r1422, %r1328, %r1415, %r1347;
+	.loc	1 54 23                         // router_kernels.py:54:23
 	// begin inline asm
 	mov.u32 %r919, 0x0;
 	ld.global.b32 { %r919 }, [ %rd35 + 0 ];
 	// end inline asm
-	.loc	1 53 68                         // router_kernels.py:53:68
+	.loc	1 54 66                         // router_kernels.py:54:66
 	// begin inline asm
 	mov.u32 %r920, 0x0;
 	ld.global.b32 { %r920 }, [ %rd36 + 0 ];
 	// end inline asm
-	.loc	1 53 60                         // router_kernels.py:53:60
+	.loc	1 54 58                         // router_kernels.py:54:58
 	bar.sync 	0;
-	st.shared.b32 	[%r1151], %r920;
+	st.shared.b32 	[%r1154], %r920;
 	bar.sync 	0;
-	ld.shared.b32 	%r1420, [%r1152];
-	ld.shared.b32 	%r1421, [%r1155+128];
-	ld.shared.b32 	%r1422, [%r1158+256];
-	ld.shared.b32 	%r1423, [%r1161+384];
-	mul.f32 	%r1424, %r1130, %r1421;
-	mul.f32 	%r1425, %r1134, %r1421;
-	mul.f32 	%r1426, %r1138, %r1421;
-	mul.f32 	%r1427, %r1142, %r1421;
+	ld.shared.b32 	%r1423, [%r1155];
+	ld.shared.b32 	%r1424, [%r1158+128];
+	ld.shared.b32 	%r1425, [%r1161+256];
+	ld.shared.b32 	%r1426, [%r1164+384];
+	mul.f32 	%r1427, %r1133, %r1424;
+	mul.f32 	%r1428, %r1137, %r1424;
+	mul.f32 	%r1429, %r1141, %r1424;
+	mul.f32 	%r1430, %r1145, %r1424;
 $L__tmp80:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	fma.rn.f32 	%r1428, %r1129, %r1420, %r1424;
-	fma.rn.f32 	%r1429, %r1131, %r1422, %r1428;
-	fma.rn.f32 	%r1430, %r1132, %r1423, %r1429;
-	fma.rn.f32 	%r1431, %r1133, %r1420, %r1425;
-	fma.rn.f32 	%r1432, %r1135, %r1422, %r1431;
-	fma.rn.f32 	%r1433, %r1136, %r1423, %r1432;
-	fma.rn.f32 	%r1434, %r1137, %r1420, %r1426;
-	fma.rn.f32 	%r1435, %r1139, %r1422, %r1434;
-	fma.rn.f32 	%r1436, %r1140, %r1423, %r1435;
-	fma.rn.f32 	%r1437, %r1141, %r1420, %r1427;
-	fma.rn.f32 	%r1438, %r1143, %r1422, %r1437;
-	fma.rn.f32 	%r1439, %r1144, %r1423, %r1438;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	fma.rn.f32 	%r1431, %r1132, %r1423, %r1427;
+	fma.rn.f32 	%r1432, %r1134, %r1425, %r1431;
+	fma.rn.f32 	%r1433, %r1135, %r1426, %r1432;
+	fma.rn.f32 	%r1434, %r1136, %r1423, %r1428;
+	fma.rn.f32 	%r1435, %r1138, %r1425, %r1434;
+	fma.rn.f32 	%r1436, %r1139, %r1426, %r1435;
+	fma.rn.f32 	%r1437, %r1140, %r1423, %r1429;
+	fma.rn.f32 	%r1438, %r1142, %r1425, %r1437;
+	fma.rn.f32 	%r1439, %r1143, %r1426, %r1438;
+	fma.rn.f32 	%r1440, %r1144, %r1423, %r1430;
+	fma.rn.f32 	%r1441, %r1146, %r1425, %r1440;
+	fma.rn.f32 	%r1442, %r1147, %r1426, %r1441;
 $L__tmp81:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1440, %r1430, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1443, %r1433, 16, 31, -1;
 $L__tmp82:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1441, %r1430, %r1440;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1444, %r1433, %r1443;
 $L__tmp83:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1442, %r1441, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1445, %r1444, 8, 31, -1;
 $L__tmp84:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1443, %r1441, %r1442;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1446, %r1444, %r1445;
 $L__tmp85:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1444, %r1443, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1447, %r1446, 4, 31, -1;
 $L__tmp86:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1445, %r1443, %r1444;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1448, %r1446, %r1447;
 $L__tmp87:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1446, %r1445, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1449, %r1448, 2, 31, -1;
 $L__tmp88:
-	.loc	1 53 15                         // router_kernels.py:53:15
-	fma.rn.f32 	%r1447, %r1128, %r1306, %r919;
-	fma.rn.f32 	%r1448, %r1128, %r1307, %r919;
-	fma.rn.f32 	%r1449, %r1128, %r1308, %r919;
-	fma.rn.f32 	%r1450, %r1128, %r1309, %r919;
+	.loc	1 54 15                         // router_kernels.py:54:15
+	fma.rn.f32 	%r1450, %r1131, %r1309, %r919;
+	fma.rn.f32 	%r1451, %r1131, %r1310, %r919;
+	fma.rn.f32 	%r1452, %r1131, %r1311, %r919;
+	fma.rn.f32 	%r1453, %r1131, %r1312, %r919;
 $L__tmp89:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1451, %r1445, %r1446;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1454, %r1448, %r1449;
 $L__tmp90:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1452, %r1451, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1453, %r1433, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1455, %r1454, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1456, %r1436, 16, 31, -1;
 $L__tmp91:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1454, %r1433, %r1453;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1457, %r1436, %r1456;
 $L__tmp92:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1455, %r1454, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1458, %r1457, 8, 31, -1;
 $L__tmp93:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1456, %r1454, %r1455;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1459, %r1457, %r1458;
 $L__tmp94:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1457, %r1456, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1460, %r1459, 4, 31, -1;
 $L__tmp95:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1458, %r1456, %r1457;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1461, %r1459, %r1460;
 $L__tmp96:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1459, %r1458, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1462, %r1461, 2, 31, -1;
 $L__tmp97:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1460, %r1458, %r1459;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1463, %r1461, %r1462;
 $L__tmp98:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1461, %r1460, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1462, %r1436, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1464, %r1463, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1465, %r1439, 16, 31, -1;
 $L__tmp99:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1463, %r1436, %r1462;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1466, %r1439, %r1465;
 $L__tmp100:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1464, %r1463, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1467, %r1466, 8, 31, -1;
 $L__tmp101:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1465, %r1463, %r1464;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1468, %r1466, %r1467;
 $L__tmp102:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1466, %r1465, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1469, %r1468, 4, 31, -1;
 $L__tmp103:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1467, %r1465, %r1466;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1470, %r1468, %r1469;
 $L__tmp104:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1468, %r1467, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1471, %r1470, 2, 31, -1;
 $L__tmp105:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1469, %r1467, %r1468;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1472, %r1470, %r1471;
 $L__tmp106:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1470, %r1469, 1, 31, -1;
-	shfl.sync.bfly.b32 	%r1471, %r1439, 16, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1473, %r1472, 1, 31, -1;
+	shfl.sync.bfly.b32 	%r1474, %r1442, 16, 31, -1;
 $L__tmp107:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1472, %r1439, %r1471;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1475, %r1442, %r1474;
 $L__tmp108:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1473, %r1472, 8, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1476, %r1475, 8, 31, -1;
 $L__tmp109:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1474, %r1472, %r1473;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1477, %r1475, %r1476;
 $L__tmp110:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1475, %r1474, 4, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1478, %r1477, 4, 31, -1;
 $L__tmp111:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1476, %r1474, %r1475;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1479, %r1477, %r1478;
 $L__tmp112:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1477, %r1476, 2, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1480, %r1479, 2, 31, -1;
 $L__tmp113:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1478, %r1476, %r1477;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1481, %r1479, %r1480;
 $L__tmp114:
-	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:53:104 ]
-	shfl.sync.bfly.b32 	%r1479, %r1478, 1, 31, -1;
+	.loc	2 293 36                        // standard.py:293:36 @[ router_kernels.py:54:100 ]
+	shfl.sync.bfly.b32 	%r1482, %r1481, 1, 31, -1;
 $L__tmp115:
-	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:53:104 ] ]
-	add.f32 	%r1480, %r1478, %r1479;
-	add.f32 	%r1481, %r1469, %r1470;
-	add.f32 	%r1482, %r1460, %r1461;
-	add.f32 	%r1483, %r1451, %r1452;
+	.loc	2 263 15                        // standard.py:263:15 @[ standard.py:293:36 @[ router_kernels.py:54:100 ] ]
+	add.f32 	%r1483, %r1481, %r1482;
+	add.f32 	%r1484, %r1472, %r1473;
+	add.f32 	%r1485, %r1463, %r1464;
+	add.f32 	%r1486, %r1454, %r1455;
 $L__tmp116:
-	.loc	1 53 42                         // router_kernels.py:53:42
-	fma.rn.f32 	%r1484, %r1325, %r1483, %r1450;
-	fma.rn.f32 	%r1485, %r1325, %r1482, %r1449;
-	fma.rn.f32 	%r1486, %r1325, %r1481, %r1448;
-	fma.rn.f32 	%r1487, %r1325, %r1480, %r1447;
 	.loc	1 54 40                         // router_kernels.py:54:40
+	fma.rn.f32 	%r1487, %r1328, %r1486, %r1453;
+	fma.rn.f32 	%r1488, %r1328, %r1485, %r1452;
+	fma.rn.f32 	%r1489, %r1328, %r1484, %r1451;
+	fma.rn.f32 	%r1490, %r1328, %r1483, %r1450;
+	.loc	1 55 40                         // router_kernels.py:55:40
 	bar.sync 	0;
-	st.shared.v4.b32 	[%r1318], {%r1484, %r1486, %r1485, %r1487};
+	st.shared.v4.b32 	[%r1321], {%r1487, %r1489, %r1488, %r1490};
 	bar.sync 	0;
-	ld.shared.v2.b32 	{%r1488, %r1489}, [%r1322];
-	setp.ge.f32 	%p62, %r1419, %r1488;
-	setp.ge.f32 	%p63, %r1418, %r1489;
-	setp.ge.f32 	%p64, %r1417, %r1488;
-	setp.ge.f32 	%p65, %r1416, %r1489;
-	.loc	1 44 22                         // router_kernels.py:44:22
-	add.f32 	%r1490, %r510, 0f00000000;
-	add.f32 	%r1491, %r512, 0f00000000;
-	add.f32 	%r1492, %r514, 0f00000000;
-	add.f32 	%r1493, %r516, 0f00000000;
-	.loc	1 44 63                         // router_kernels.py:44:63
-	mul.f32 	%r1494, %r1128, %r1493;
-	mul.f32 	%r1495, %r1128, %r1492;
-	mul.f32 	%r1496, %r1128, %r1491;
-	mul.f32 	%r1497, %r1128, %r1490;
-	.loc	1 51 19                         // router_kernels.py:51:19
-	fma.rn.f32 	%r1498, %r1128, %r1490, %r114;
-	fma.rn.f32 	%r1499, %r1128, %r1491, %r114;
-	fma.rn.f32 	%r1500, %r1128, %r1492, %r116;
-	fma.rn.f32 	%r1501, %r1128, %r1493, %r116;
+	ld.shared.v2.b32 	{%r1491, %r1492}, [%r1325];
+	setp.ge.f32 	%p62, %r1422, %r1491;
+	setp.ge.f32 	%p63, %r1421, %r1492;
+	setp.ge.f32 	%p64, %r1420, %r1491;
+	setp.ge.f32 	%p65, %r1419, %r1492;
+	.loc	1 45 22                         // router_kernels.py:45:22
+	add.f32 	%r1493, %r510, 0f00000000;
+	add.f32 	%r1494, %r512, 0f00000000;
+	add.f32 	%r1495, %r514, 0f00000000;
+	add.f32 	%r1496, %r516, 0f00000000;
+	.loc	1 45 63                         // router_kernels.py:45:63
+	mul.f32 	%r1497, %r1131, %r1496;
+	mul.f32 	%r1498, %r1131, %r1495;
+	mul.f32 	%r1499, %r1131, %r1494;
+	mul.f32 	%r1500, %r1131, %r1493;
+	.loc	1 52 19                         // router_kernels.py:52:19
+	fma.rn.f32 	%r1501, %r1131, %r1493, %r114;
+	fma.rn.f32 	%r1502, %r1131, %r1494, %r114;
+	fma.rn.f32 	%r1503, %r1131, %r1495, %r116;
+	fma.rn.f32 	%r1504, %r1131, %r1496, %r116;
 	.loc	1 35 33                         // router_kernels.py:35:33
-	or.b32 	%r1502, %r923, %r1304;
-	or.b32 	%r1503, %r1502, 8;
-	.loc	1 48 20                         // router_kernels.py:48:20
-	setp.gt.f32 	%p66, %r1497, %r1342;
-	setp.gt.f32 	%p67, %r1496, %r1343;
-	setp.gt.f32 	%p68, %r1495, %r1342;
-	setp.gt.f32 	%p69, %r1494, %r1343;
-	.loc	1 48 88                         // router_kernels.py:48:88
-	sub.s32 	%r1504, %r1502, %r952;
-	sub.s32 	%r1505, %r1503, %r952;
-	sub.s32 	%r1506, %r1502, %r953;
-	sub.s32 	%r1507, %r1503, %r953;
-	sub.s32 	%r1508, %r1502, %r954;
-	sub.s32 	%r1509, %r1502, %r955;
-	sub.s32 	%r1510, %r1503, %r954;
-	sub.s32 	%r1511, %r1503, %r955;
-	.loc	1 48 74                         // router_kernels.py:48:74
-	abs.s32 	%r1512, %r1505;
-	abs.s32 	%r1513, %r1504;
-	abs.s32 	%r1514, %r1507;
-	abs.s32 	%r1515, %r1506;
-	abs.s32 	%r1516, %r1508;
-	abs.s32 	%r1517, %r1509;
-	abs.s32 	%r1518, %r1510;
+	or.b32 	%r1505, %r923, %r1307;
+	or.b32 	%r1506, %r1505, 8;
+	.loc	1 49 20                         // router_kernels.py:49:20
+	setp.gt.f32 	%p66, %r1500, %r1345;
+	setp.gt.f32 	%p67, %r1499, %r1346;
+	setp.gt.f32 	%p68, %r1498, %r1345;
+	setp.gt.f32 	%p69, %r1497, %r1346;
+	.loc	1 49 88                         // router_kernels.py:49:88
+	sub.s32 	%r1507, %r1505, %r953;
+	sub.s32 	%r1508, %r1506, %r953;
+	sub.s32 	%r1509, %r1505, %r954;
+	sub.s32 	%r1510, %r1506, %r954;
+	sub.s32 	%r1511, %r1505, %r955;
+	sub.s32 	%r1512, %r1505, %r956;
+	sub.s32 	%r1513, %r1506, %r955;
+	sub.s32 	%r1514, %r1506, %r956;
+	.loc	1 49 74                         // router_kernels.py:49:74
+	abs.s32 	%r1515, %r1508;
+	abs.s32 	%r1516, %r1507;
+	abs.s32 	%r1517, %r1510;
+	abs.s32 	%r1518, %r1509;
 	abs.s32 	%r1519, %r1511;
-	.loc	1 48 104                        // router_kernels.py:48:104
-	setp.lt.s32 	%p70, %r1515, 2;
-	setp.lt.s32 	%p71, %r1514, 2;
-	setp.lt.s32 	%p72, %r1517, 2;
-	setp.ge.s32 	%p73, %r955, %r934;
-	setp.lt.s32 	%p74, %r1518, 2;
-	setp.lt.s32 	%p75, %r1519, 2;
-	.loc	1 48 67                         // router_kernels.py:48:67
+	abs.s32 	%r1520, %r1512;
+	abs.s32 	%r1521, %r1513;
+	abs.s32 	%r1522, %r1514;
+	.loc	1 49 104                        // router_kernels.py:49:104
+	setp.lt.s32 	%p70, %r1518, 2;
+	setp.lt.s32 	%p71, %r1517, 2;
+	setp.lt.s32 	%p72, %r1520, 2;
+	setp.ge.s32 	%p73, %r956, %r934;
+	setp.lt.s32 	%p74, %r1521, 2;
+	setp.lt.s32 	%p75, %r1522, 2;
+	.loc	1 49 67                         // router_kernels.py:49:67
 	and.pred 	%p76, %p73, %p46;
-	.loc	1 48 104                        // router_kernels.py:48:104
-	setp.lt.s32 	%p77, %r1513, 2;
-	setp.lt.s32 	%p78, %r1512, 2;
-	setp.lt.s32 	%p79, %r1516, 2;
-	setp.ge.s32 	%p80, %r954, %r934;
-	.loc	1 48 67                         // router_kernels.py:48:67
+	.loc	1 49 104                        // router_kernels.py:49:104
+	setp.lt.s32 	%p77, %r1516, 2;
+	setp.lt.s32 	%p78, %r1515, 2;
+	setp.lt.s32 	%p79, %r1519, 2;
+	setp.ge.s32 	%p80, %r955, %r934;
+	.loc	1 49 67                         // router_kernels.py:49:67
 	and.pred 	%p81, %p80, %p45;
-	.loc	1 51 52                         // router_kernels.py:51:52
-	add.f32 	%r1520, %r912, 0f00000000;
-	add.f32 	%r1521, %r914, 0f00000000;
-	add.f32 	%r1522, %r916, 0f00000000;
-	add.f32 	%r1523, %r918, 0f00000000;
-	.loc	1 51 35                         // router_kernels.py:51:35
-	fma.rn.f32 	%r1524, %r1325, %r1523, %r1501;
-	fma.rn.f32 	%r1525, %r1325, %r1522, %r1500;
-	fma.rn.f32 	%r1526, %r1325, %r1521, %r1499;
-	fma.rn.f32 	%r1527, %r1325, %r1520, %r1498;
-	.loc	1 54 40                         // router_kernels.py:54:40
-	setp.ge.f32 	%p82, %r1527, %r1488;
-	setp.ge.f32 	%p83, %r1526, %r1489;
-	setp.ge.f32 	%p84, %r1525, %r1488;
-	setp.ge.f32 	%p85, %r1524, %r1489;
-	.loc	1 54 31                         // router_kernels.py:54:31
-	selp.b32 	%r1528, 1, 0, %p65;
-	selp.b32 	%r1529, 255, %r1528, %p53;
-	selp.b32 	%r1530, 255, %r1529, %p74;
-	selp.b32 	%r1531, 255, %r1530, %p81;
-	selp.b32 	%r1532, 1, 0, %p64;
-	selp.b32 	%r1533, 255, %r1532, %p81;
-	selp.b32 	%r1534, 255, %r1533, %p52;
-	selp.b32 	%r1535, 255, %r1534, %p79;
-	prmt.b32 	%r1536, %r1535, %r1531, 0x3340U;
-	selp.b32 	%r1537, 1, 0, %p63;
-	selp.b32 	%r1538, 255, %r1537, %p47;
-	selp.b32 	%r1539, 255, %r1538, %p51;
-	selp.b32 	%r1540, 255, %r1539, %p78;
-	selp.b32 	%r1541, 1, 0, %p62;
-	selp.b32 	%r1542, 255, %r1541, %p47;
-	selp.b32 	%r1543, 255, %r1542, %p50;
-	selp.b32 	%r1544, 255, %r1543, %p77;
-	prmt.b32 	%r1545, %r1544, %r1540, 0x3340U;
-	prmt.b32 	%r1546, %r1545, %r1536, 0x5410U;
-	selp.b32 	%r1547, 1, 0, %p85;
-	selp.b32 	%r1548, 255, %r1547, %p69;
-	selp.b32 	%r1549, 255, %r1548, %p75;
-	selp.b32 	%r1550, 255, %r1549, %p76;
-	selp.b32 	%r1551, 1, 0, %p84;
-	selp.b32 	%r1552, 255, %r1551, %p76;
-	selp.b32 	%r1553, 255, %r1552, %p68;
-	selp.b32 	%r1554, 255, %r1553, %p72;
-	prmt.b32 	%r1555, %r1554, %r1550, 0x3340U;
-	selp.b32 	%r1556, 1, 0, %p83;
-	selp.b32 	%r1557, 255, %r1556, %p48;
-	selp.b32 	%r1558, 255, %r1557, %p67;
-	selp.b32 	%r1559, 255, %r1558, %p71;
-	selp.b32 	%r1560, 1, 0, %p82;
-	selp.b32 	%r1561, 255, %r1560, %p48;
-	selp.b32 	%r1562, 255, %r1561, %p66;
-	selp.b32 	%r1563, 255, %r1562, %p70;
-	prmt.b32 	%r1564, %r1563, %r1559, 0x3340U;
-	prmt.b32 	%r1565, %r1564, %r1555, 0x5410U;
-	.loc	1 55 72                         // router_kernels.py:55:72
+	.loc	1 52 52                         // router_kernels.py:52:52
+	add.f32 	%r1523, %r912, 0f00000000;
+	add.f32 	%r1524, %r914, 0f00000000;
+	add.f32 	%r1525, %r916, 0f00000000;
+	add.f32 	%r1526, %r918, 0f00000000;
+	.loc	1 52 35                         // router_kernels.py:52:35
+	fma.rn.f32 	%r1527, %r1328, %r1526, %r1504;
+	fma.rn.f32 	%r1528, %r1328, %r1525, %r1503;
+	fma.rn.f32 	%r1529, %r1328, %r1524, %r1502;
+	fma.rn.f32 	%r1530, %r1328, %r1523, %r1501;
+	.loc	1 55 40                         // router_kernels.py:55:40
+	setp.ge.f32 	%p82, %r1530, %r1491;
+	setp.ge.f32 	%p83, %r1529, %r1492;
+	setp.ge.f32 	%p84, %r1528, %r1491;
+	setp.ge.f32 	%p85, %r1527, %r1492;
+	.loc	1 55 31                         // router_kernels.py:55:31
+	selp.b32 	%r1531, 1, 0, %p65;
+	selp.b32 	%r1532, 255, %r1531, %p53;
+	selp.b32 	%r1533, 255, %r1532, %p74;
+	selp.b32 	%r1534, 255, %r1533, %p81;
+	selp.b32 	%r1535, 1, 0, %p64;
+	selp.b32 	%r1536, 255, %r1535, %p81;
+	selp.b32 	%r1537, 255, %r1536, %p52;
+	selp.b32 	%r1538, 255, %r1537, %p79;
+	prmt.b32 	%r1539, %r1538, %r1534, 0x3340U;
+	selp.b32 	%r1540, 1, 0, %p63;
+	selp.b32 	%r1541, 255, %r1540, %p47;
+	selp.b32 	%r1542, 255, %r1541, %p51;
+	selp.b32 	%r1543, 255, %r1542, %p78;
+	selp.b32 	%r1544, 1, 0, %p62;
+	selp.b32 	%r1545, 255, %r1544, %p47;
+	selp.b32 	%r1546, 255, %r1545, %p50;
+	selp.b32 	%r1547, 255, %r1546, %p77;
+	prmt.b32 	%r1548, %r1547, %r1543, 0x3340U;
+	prmt.b32 	%r1549, %r1548, %r1539, 0x5410U;
+	selp.b32 	%r1550, 1, 0, %p85;
+	selp.b32 	%r1551, 255, %r1550, %p69;
+	selp.b32 	%r1552, 255, %r1551, %p75;
+	selp.b32 	%r1553, 255, %r1552, %p76;
+	selp.b32 	%r1554, 1, 0, %p84;
+	selp.b32 	%r1555, 255, %r1554, %p76;
+	selp.b32 	%r1556, 255, %r1555, %p68;
+	selp.b32 	%r1557, 255, %r1556, %p72;
+	prmt.b32 	%r1558, %r1557, %r1553, 0x3340U;
+	selp.b32 	%r1559, 1, 0, %p83;
+	selp.b32 	%r1560, 255, %r1559, %p48;
+	selp.b32 	%r1561, 255, %r1560, %p67;
+	selp.b32 	%r1562, 255, %r1561, %p71;
+	selp.b32 	%r1563, 1, 0, %p82;
+	selp.b32 	%r1564, 255, %r1563, %p48;
+	selp.b32 	%r1565, 255, %r1564, %p66;
+	selp.b32 	%r1566, 255, %r1565, %p70;
+	prmt.b32 	%r1567, %r1566, %r1562, 0x3340U;
+	prmt.b32 	%r1568, %r1567, %r1558, 0x5410U;
+	.loc	1 56 72                         // router_kernels.py:56:72
 	bar.sync 	0;
-	shl.b32 	%r1566, %r928, 5;
-	shl.b32 	%r1567, %r940, 3;
-	shl.b32 	%r1568, %r1088, 2;
-	and.b32 	%r1569, %r924, 100;
-	or.b32 	%r1570, %r1566, %r1567;
-	xor.b32 	%r1571, %r1568, %r1569;
-	or.b32 	%r1572, %r1570, %r1571;
-	add.s32 	%r1573, %r972, %r1572;
-	st.shared.b32 	[%r1573], %r1546;
-	xor.b32 	%r1574, %r1572, 4;
-	add.s32 	%r1575, %r972, %r1574;
-	st.shared.b32 	[%r1575], %r1565;
+	shl.b32 	%r1569, %r928, 5;
+	shl.b32 	%r1570, %r941, 3;
+	shl.b32 	%r1571, %r1091, 2;
+	and.b32 	%r1572, %r924, 100;
+	or.b32 	%r1573, %r1569, %r1570;
+	xor.b32 	%r1574, %r1571, %r1572;
+	or.b32 	%r1575, %r1573, %r1574;
+	add.s32 	%r1576, %r974, %r1575;
+	st.shared.b32 	[%r1576], %r1549;
+	xor.b32 	%r1577, %r1575, 4;
+	add.s32 	%r1578, %r974, %r1577;
+	st.shared.b32 	[%r1578], %r1568;
 	bar.sync 	0;
-	shr.u32 	%r1576, %r924, 4;
-	and.b32 	%r1577, %r1576, 2;
-	and.b32 	%r1578, %r1284, 132;
-	xor.b32 	%r1579, %r1578, %r967;
-	or.b32 	%r1580, %r1579, %r1577;
-	add.s32 	%r1581, %r972, %r1580;
-	ld.shared.v2.b8 	{%rs1, %rs5}, [%r1581];
-	xor.b32 	%r1582, %r1580, 32;
-	add.s32 	%r1583, %r972, %r1582;
-	ld.shared.v2.b8 	{%rs2, %rs6}, [%r1583+256];
-	xor.b32 	%r1584, %r1580, 64;
-	add.s32 	%r1585, %r972, %r1584;
-	ld.shared.v2.b8 	{%rs3, %rs7}, [%r1585+512];
-	xor.b32 	%r1586, %r1580, 96;
-	add.s32 	%r1587, %r972, %r1586;
-	ld.shared.v2.b8 	{%rs4, %rs8}, [%r1587+768];
+	shr.u32 	%r1579, %r924, 4;
+	and.b32 	%r1580, %r1579, 2;
+	and.b32 	%r1581, %r1287, 132;
+	xor.b32 	%r1582, %r1581, %r969;
+	or.b32 	%r1583, %r1582, %r1580;
+	add.s32 	%r1584, %r974, %r1583;
+	ld.shared.v2.b8 	{%rs1, %rs5}, [%r1584];
+	xor.b32 	%r1585, %r1583, 32;
+	add.s32 	%r1586, %r974, %r1585;
+	ld.shared.v2.b8 	{%rs2, %rs6}, [%r1586+256];
+	xor.b32 	%r1587, %r1583, 64;
+	add.s32 	%r1588, %r974, %r1587;
+	ld.shared.v2.b8 	{%rs3, %rs7}, [%r1588+512];
+	xor.b32 	%r1589, %r1583, 96;
+	add.s32 	%r1590, %r974, %r1589;
+	ld.shared.v2.b8 	{%rs4, %rs8}, [%r1590+768];
 	// begin inline asm
 	@%p17 st.global.b8 [ %rd37 + 0 ], { %rs1 };
 	// end inline asm
@@ -3325,7 +3331,7 @@ $L__tmp116:
 	// begin inline asm
 	@%p24 st.global.b8 [ %rd44 + 0 ], { %rs8 };
 	// end inline asm
-	.loc	1 55 4                          // router_kernels.py:55:4
+	.loc	1 56 4                          // router_kernels.py:56:4
 	ret;
 $L__tmp117:
 $L__func_end0:
@@ -3408,12 +3414,12 @@ $L__func_end0:
 	}
 	.section	.debug_info
 	{
-.b32 264                                // Length of Unit
+.b32 260                                // Length of Unit
 .b8 2                                   // DWARF version number
 .b8 0
 .b32 .debug_abbrev                      // Offset Into Abbrev. Section
 .b8 8                                   // Address Size (in bytes)
-.b8 1                                   // Abbrev [1] 0xb:0x101 DW_TAG_compile_unit
+.b8 1                                   // Abbrev [1] 0xb:0xfd DW_TAG_compile_unit
 .b8 116                                 // DW_AT_producer
 .b8 114
 .b8 105
@@ -3442,16 +3448,12 @@ $L__func_end0:
 .b8 121
 .b8 0
 .b32 .debug_line                        // DW_AT_stmt_list
-.b8 47                                  // DW_AT_comp_dir
-.b8 109
-.b8 110
-.b8 116
-.b8 47
-.b8 100
-.b8 47
+.b8 68                                  // DW_AT_comp_dir
+.b8 58
+.b8 92
 .b8 77
 .b8 76
-.b8 47
+.b8 92
 .b8 83
 .b8 112
 .b8 97
@@ -3460,7 +3462,7 @@ $L__func_end0:
 .b8 101
 .b8 71
 .b8 80
-.b8 47
+.b8 92
 .b8 115
 .b8 112
 .b8 97
@@ -3469,7 +3471,7 @@ $L__func_end0:
 .b8 101
 .b8 103
 .b8 112
-.b8 47
+.b8 92
 .b8 112
 .b8 97
 .b8 99
@@ -3482,7 +3484,7 @@ $L__func_end0:
 .b8 100
 .b8 97
 .b8 0
-.b8 2                                   // Abbrev [2] 0x53:0xc DW_TAG_subprogram
+.b8 2                                   // Abbrev [2] 0x4f:0xc DW_TAG_subprogram
 .b8 95                                  // DW_AT_name
 .b8 99
 .b8 108
@@ -3494,35 +3496,35 @@ $L__func_end0:
 .b8 121
 .b8 0
 .b8 1                                   // DW_AT_inline
-.b8 3                                   // Abbrev [3] 0x5f:0xac DW_TAG_subprogram
+.b8 3                                   // Abbrev [3] 0x5b:0xac DW_TAG_subprogram
 .b64 $L__func_begin0                    // DW_AT_low_pc
 .b64 $L__func_end0                      // DW_AT_high_pc
-.b32 83                                 // DW_AT_abstract_origin
-.b8 4                                   // Abbrev [4] 0x74:0x32 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
+.b32 79                                 // DW_AT_abstract_origin
+.b8 4                                   // Abbrev [4] 0x70:0x32 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
 .b64 $L__tmp1                           // DW_AT_low_pc
 .b64 $L__tmp79                          // DW_AT_high_pc
-.b8 1                                   // DW_AT_call_file
-.b8 46                                  // DW_AT_call_line
-.b8 61                                  // DW_AT_call_column
-.b8 5                                   // Abbrev [5] 0x8c:0x19 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
-.b64 $L__tmp1                           // DW_AT_low_pc
-.b64 $L__tmp79                          // DW_AT_high_pc
-.b8 2                                   // DW_AT_call_file
-.b8 37                                  // DW_AT_call_line
-.b8 1
-.b8 36                                  // DW_AT_call_column
-.b8 0                                   // End Of Children Mark
-.b8 4                                   // Abbrev [4] 0xa6:0x32 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
-.b64 $L__tmp36                          // DW_AT_low_pc
-.b64 $L__tmp77                          // DW_AT_high_pc
 .b8 1                                   // DW_AT_call_file
 .b8 47                                  // DW_AT_call_line
-.b8 66                                  // DW_AT_call_column
-.b8 5                                   // Abbrev [5] 0xbe:0x19 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
+.b8 59                                  // DW_AT_call_column
+.b8 5                                   // Abbrev [5] 0x88:0x19 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
+.b64 $L__tmp1                           // DW_AT_low_pc
+.b64 $L__tmp79                          // DW_AT_high_pc
+.b8 2                                   // DW_AT_call_file
+.b8 37                                  // DW_AT_call_line
+.b8 1
+.b8 36                                  // DW_AT_call_column
+.b8 0                                   // End Of Children Mark
+.b8 4                                   // Abbrev [4] 0xa2:0x32 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
+.b64 $L__tmp36                          // DW_AT_low_pc
+.b64 $L__tmp77                          // DW_AT_high_pc
+.b8 1                                   // DW_AT_call_file
+.b8 48                                  // DW_AT_call_line
+.b8 64                                  // DW_AT_call_column
+.b8 5                                   // Abbrev [5] 0xba:0x19 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
 .b64 $L__tmp36                          // DW_AT_low_pc
 .b64 $L__tmp77                          // DW_AT_high_pc
 .b8 2                                   // DW_AT_call_file
@@ -3530,15 +3532,15 @@ $L__func_end0:
 .b8 1
 .b8 36                                  // DW_AT_call_column
 .b8 0                                   // End Of Children Mark
-.b8 4                                   // Abbrev [4] 0xd8:0x32 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
+.b8 4                                   // Abbrev [4] 0xd4:0x32 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
 .b64 $L__tmp80                          // DW_AT_low_pc
 .b64 $L__tmp116                         // DW_AT_high_pc
 .b8 1                                   // DW_AT_call_file
-.b8 53                                  // DW_AT_call_line
-.b8 104                                 // DW_AT_call_column
-.b8 5                                   // Abbrev [5] 0xf0:0x19 DW_TAG_inlined_subroutine
-.b32 83                                 // DW_AT_abstract_origin
+.b8 54                                  // DW_AT_call_line
+.b8 100                                 // DW_AT_call_column
+.b8 5                                   // Abbrev [5] 0xec:0x19 DW_TAG_inlined_subroutine
+.b32 79                                 // DW_AT_abstract_origin
 .b64 $L__tmp80                          // DW_AT_low_pc
 .b64 $L__tmp116                         // DW_AT_high_pc
 .b8 2                                   // DW_AT_call_file

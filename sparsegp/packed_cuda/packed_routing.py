@@ -46,7 +46,8 @@ def pool(x, kind):
 
 
 def select(q, keys, kc, kvar, disp, mean, between, scale, tau, sinks):
-    heads, n = kc.shape[:2]
+    heads, n = q.size(2), kc.size(1)
+    ratio = heads // kc.size(0)
     tokens = q.shape[1]
     keys = _aligned(keys)
     qb = pool(q, "query")
@@ -54,14 +55,14 @@ def select(q, keys, kc, kvar, disp, mean, between, scale, tau, sinks):
     _launch(
         "classify",
         ((n + 15) // 16, (n + 63) // 64, heads),
-        [qb, kc, kvar, disp, mean, between, kvar.mean(1), disp.mean(1), flags, n, scale, float(tau), *sinks],
+        [qb, kc, kvar, disp, mean, between, kvar.mean(1), disp.mean(1), flags, n, scale, float(tau), *sinks, ratio],
     )
     nt = (tokens + 255) // 256
     partial = torch.empty((heads, n, nt, 3), device=q.device, dtype=torch.float32)
     cut = torch.empty((heads, n), device=q.device, dtype=torch.float32)
     bits = torch.empty_like(flags, dtype=torch.int64)
     grid = ((n + 31) // 32, nt, heads)
-    args = [qb, keys, flags, partial, cut, bits, tokens, n, nt, keys.stride(1), keys.stride(2), scale]
+    args = [qb, keys, flags, partial, cut, bits, tokens, n, nt, keys.stride(1), keys.stride(2), scale, ratio]
     _launch("moments", grid, args)
     _launch("cut", (heads * n, 1, 1), [partial, cut, nt])
     _launch("select", grid, args)

@@ -25,13 +25,18 @@ def moments(x, n):
     return mean.to(x.dtype), var, length
 
 
-def sol_route(q, k, v, scale, tau, sink_start, sink_length, engine):
-    groups, tokens, dim = q.shape
-    n = (tokens + 63) // 64
-    qm, _, lengths = moments(q, n)
-    km, kvar, _ = moments(k, n)
+def prepare_sol_kv(k, v):
+    n = (k.size(1) + 63) // 64
+    km, kvar, lengths = moments(k, n)
     vm, vvar, _ = moments(v, n)
-    disp = (lengths * vvar.float().mean(-1).clamp_min(0).sqrt().clamp_min(1.0e-6)).log2()
+    disp = (lengths * vvar.float().mean(-1).clamp_min(0).sqrt().clamp_min(1.e-6)).log2()
+    return km, vm, kvar, disp
+
+
+def route_queries(q, k, km, kvar, disp, scale, tau, sink_start, sink_length, engine):
+    tokens = q.size(1)
+    n = (tokens + 63) // 64
+    qm, _, _ = moments(q, n)
     s = scale * math.log2(math.e)
     qf, kf, kvar = qm.float(), km.float(), kvar.float()
     between, center = torch.var_mean(kf, dim=1, correction=0, keepdim=True)
@@ -49,4 +54,9 @@ def sol_route(q, k, v, scale, tau, sink_start, sink_length, engine):
     full = (proxy > (mu + tau * sigma)[:, :, None]) | neighbor
     flags = torch.where(full, -1, (risk >= cut[:, :, None]).to(torch.int8)).to(torch.int8)
     bits = engine.select(qm, pad(k, n * 64), flags, tokens, s)
-    return bits, km, vm
+    return bits
+
+
+def sol_route(q, k, v, scale, tau, sink_start, sink_length, engine):
+    km, vm, kvar, disp = prepare_sol_kv(k, v)
+    return route_queries(q, k, km, kvar, disp, scale, tau, sink_start, sink_length, engine), km, vm

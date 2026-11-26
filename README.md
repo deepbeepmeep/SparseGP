@@ -15,6 +15,19 @@ The fork is based on [SpargeAttention](https://github.com/thu-ml/SpargeAttn). It
 
 For Sol³, a protected prefix or suffix receives dense attention and its key blocks remain exact. Short sequences and incompatible shapes use dense attention. A dense Sparge call uses [SageGP](https://github.com/deepbeepmeep/SageGP) when its kernel supports the call. PyTorch SDPA handles other dense requests, including explicit token masks. With an explicit block map SparseGP preserves the map even if the fast operator cannot serve the shape.
 
+### Krea 2 Turbo grouped-query attention on RTX 5090
+
+Krea 2 shares 12 K/V heads across 48 query heads. The following Windows runs used the same checkpoint, fox prompt, seed 42, eight denoising steps, CUDA graphs and WanGP Sol3 tau 0.8. Times are median wall time for three warm full image generations per mode. SSIM compares each image to dense PyTorch SDPA at its resolution. A value of 1 means identical images.
+
+| Resolution | Precise first step and first block | Sage2GP time | Sol3 INT8 time | Sage2GP SSIM | Sol3 SSIM |
+|---|---|---:|---:|---:|---:|
+| 512 × 512 | Off | 3.98 s | 3.93 s | 0.991 | 0.905 |
+| 512 × 512 | On | 3.66 s | 3.57 s | 0.991 | 0.948 |
+| 1024 × 1024 | Off | 5.22 s | 4.81 s | 0.942 | 0.739 |
+| 1024 × 1024 | On | 4.55 s | 4.37 s | 0.942 | 0.915 |
+
+Each row compares the modes in the same process. The two precision settings ran in separate sessions and their timings varied. At 1024 pixels, Sol3 without the precise first step changed the direction the fox was walking. Enabling the option preserved its direction and framing. The Sage2GP runs used WanGP's staged per-warp INT8 Q/K and FP8 V kernel for grouped-query attention. [Side-by-side images](https://github.com/deepbeepmeep/SparseGP/releases/download/v1.2.0/krea2-gqa-comparison.jpg) · [Individual runs and quality metrics](https://github.com/deepbeepmeep/SparseGP/releases/download/v1.2.0/krea2-gqa-benchmarks.json)
+
 ### Sol clip measurements from v1.0.0
 
 On the Wan 2.2 I2V singer clip, SparseGP Sol3 INT8 took **13.99 seconds** over four transformer steps. Sage2 took **15.10 seconds**, upstream Sol³ BF16 took **14.05 seconds**, and the existing Sol INT8 path took **12.56 seconds**. All four used the same seed, conditioning image, model, sampler and lossless output.
@@ -67,7 +80,7 @@ If migrating from SpargeAttention, uninstall its distribution before installing 
 
 ```shell
 python -m pip uninstall -y spas-sage-attn
-python -m pip install https://github.com/deepbeepmeep/SparseGP/releases/download/v1.1.0/sparsegp-1.1.0-py3-none-any.whl
+python -m pip install https://github.com/deepbeepmeep/SparseGP/releases/download/v1.2.0/sparsegp-1.2.0-py3-none-any.whl
 ```
 
 The CUDA and HIP paths run without Triton, including the packed Ada and Blackwell router shipped as device code. If a native image cannot load, SparseGP uses its optimized tiled INT8 Triton kernel when the installed compiler supports the GPU. Blackwell requires Triton 3.3 or later for this fallback. On Turing and RDNA 2 the fallback uses packed four-byte integer dot products. Check the actual selection with `backend_for(torch.device("cuda", 0))`. CUDA and HIP both use PyTorch's `cuda` device name.
@@ -102,6 +115,8 @@ with torch.inference_mode():
     keep[:, :, :, 1::2] = False
     sparse = sparge_attention(qh, kh, vh, keep)
 ```
+
+Sol3 accepts grouped-query self-attention in NHD layout. The query head count must be a multiple of the K/V head count. Krea 2, for example, shares each of its 12 K/V heads among four of its 48 query heads. SparseGP packs those 12 heads once and routes each query head separately. The packed Ada and Blackwell kernels process all query heads in the same launch. Other supported devices share the same K/V storage across groups of query heads. Protected prefix or suffix queries use dense grouped-query attention.
 
 WanGP uses a quality-oriented routing threshold of `tau=0.8`. The standalone Python function defaults to `tau=1.9`. Lower thresholds retain more full key blocks. In WanGP select **Sol3** in **Configuration → Performance → Attention Type**, or select it for one generation in its attention override. Conditioning and VAE decoding use dense attention. The precision option runs the entire first denoising step and the first transformer block on subsequent steps in the available default dense mode. FlashVSR uses SparseGP for its existing Sparge block maps.
 

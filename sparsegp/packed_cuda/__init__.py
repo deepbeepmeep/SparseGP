@@ -19,6 +19,7 @@ from pathlib import Path
 
 import torch
 
+GROUPED_QUERY = True
 BLOCK, GROUP, DIM = 64, 16, 128
 _K8_RECORD, _K4_RECORD, _C_RECORD = 16640, 12816, 6208                    # as in the kernels
 _SHARED = {False: 2 * _K8_RECORD + _C_RECORD + 8480, True: 2 * _K4_RECORD + _C_RECORD + 8480}
@@ -41,7 +42,8 @@ def supported(device, dtype=torch.bfloat16):
 
 def usable(q, k, v):
     """True when prepare(k, v) and attention(q, ...) can read these tensors in place."""
-    if q.ndim != 4 or q.shape != k.shape or q.shape != v.shape or q.shape[0] != 1 or q.shape[3] != DIM or q.shape[1] < BLOCK * GROUP:
+    if (q.ndim != 4 or k.ndim != 4 or k.shape != v.shape or q.shape[:2] != k.shape[:2] or q.shape[3] != k.shape[3]
+            or not k.size(2) or not q.size(2) or q.size(2) % k.size(2) or q.shape[0] != 1 or q.shape[3] != DIM or q.shape[1] < BLOCK * GROUP):
         return False
     if any(x.dtype != torch.bfloat16 or x.stride(3) != 1 or max(x.stride(1), x.stride(2)) * 2 >= 2**31 for x in (q, k, v)):
         return False
@@ -127,6 +129,9 @@ def attention(q, prepared, *, tau=1.0, scale=None, sink_tokens=0, sink_start=Non
     query (by default the last sink_tokens tokens, else from sink_start). out may be q: a query block is read before it is written."""
     kv, c, vscale, mean, var, fp4 = prepared[:6]
     _, tokens, heads, dim = q.shape
+    kv_heads = kv.size(0)
+    if not kv_heads or not heads or heads % kv_heads:
+        raise ValueError("The query head count must be a positive multiple of the key/value head count")
     blocks = (tokens + BLOCK - 1) // BLOCK
     if out is None:
         out = torch.empty(q.shape, dtype=q.dtype, device=q.device)
@@ -149,7 +154,7 @@ def attention(q, prepared, *, tau=1.0, scale=None, sink_tokens=0, sink_start=Non
     stream = torch.cuda.current_stream()
     with torch.cuda.device(index):
         for first in range(0, blocks, per_launch):
-            kernel((min(per_launch, blocks - first), heads, 1), (128, 1, 1), [*args, first], shared_mem=_SHARED[fp4], stream=stream)
+            kernel((min(per_launch, blocks - first), kv_heads, heads // kv_heads), (128, 1, 1), [*args, first], shared_mem=_SHARED[fp4], stream=stream)
     torch.autograd.graph.increment_version(out)
     return out
 

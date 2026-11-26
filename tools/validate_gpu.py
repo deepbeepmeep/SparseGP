@@ -15,6 +15,7 @@ from spas_sage_attn import spas_sage2_attn_meansim_topk_cuda
 
 @torch.inference_mode()
 def validate(device, backend):
+    validate_grouped(device, backend)
     torch.manual_seed(132)
     d = 64
     tokens = 1089
@@ -115,6 +116,26 @@ def validate(device, backend):
 
 
 @torch.inference_mode()
+def validate_grouped(device, backend):
+    torch.manual_seed(672)
+    for width in (64, 128):
+        q = torch.randn(1, 1089, 8, width, dtype=torch.bfloat16, device=device)
+        k, v = [torch.randn_like(q[:, :, :2]) for _ in range(2)]
+        options = dict(tau=0.8, prefix_tokens=17, backend=backend)
+        expected = sol3_attention(q, k.repeat_interleave(4, 2), v.repeat_interleave(4, 2), **options)
+        actual = sol3_attention(q, k, v, **options)
+        torch.testing.assert_close(actual[:, 17:], expected[:, 17:], atol=0, rtol=0)
+        torch.testing.assert_close(actual[:, :17], expected[:, :17], atol=.007, rtol=.03)
+        graph = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(graph):
+            recorded = sol3_attention(q, k, v, **options)
+        k.neg_()
+        graph.replay()
+        torch.testing.assert_close(recorded, sol3_attention(q, k, v, **options), atol=0, rtol=0)
+    print(f"{backend} grouped-query routing and graph replay passed")
+
+
+@torch.inference_mode()
 def validate_packed(device):
     from sparsegp import packed_cuda
 
@@ -139,7 +160,10 @@ def validate_packed(device):
         full = sol3_attention(q, k, v, tau=-1.0e6, precision=precision).float()
         error = (full - expected).norm() / expected.norm()
         assert torch.isfinite(full).all() and error < (0.1 if precision == "int8" else 0.45), (precision, error)
-        sol3_attention(q, k, v, precision=precision)
+        shared_k, shared_v = k[:, :, :1], v[:, :, :1]
+        grouped = sol3_attention(q, shared_k, shared_v, precision=precision)
+        repeated = sol3_attention(q, shared_k.repeat_interleave(2, 2), shared_v.repeat_interleave(2, 2), precision=precision)
+        torch.testing.assert_close(grouped, repeated, atol=0, rtol=0)
         graph = torch.cuda.CUDAGraph()
         with torch.cuda.graph(graph):
             result = sol3_attention(q, k, v, precision=precision)

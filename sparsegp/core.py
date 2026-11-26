@@ -5,7 +5,7 @@ from importlib.util import find_spec
 import torch
 import torch.nn.functional as F
 from . import native
-from .routing import pad, round_up, sol_route
+from .routing import pad, round_up, prepare_sol_kv, route_queries
 
 
 def backend_for(device):
@@ -107,12 +107,14 @@ def dense_attention(q, k, v, *, scale=None, causal=False, mask=None, dropout_p=0
     )
 
 
-def _eligible(q, k, v):
+def _eligible(q, k, v, *, grouped=False):
     return (
         q.ndim == 4
         and not (torch.is_grad_enabled() and any(x.requires_grad for x in (q, k, v)))
         and k.ndim == v.ndim == 4
-        and q.shape[:2] == k.shape[:2]
+        and q.size(0) == k.size(0)
+        and q.size(1) > 0 and k.size(1) > 0
+        and (q.size(1) % k.size(1) == 0 if grouped else q.size(1) == k.size(1))
         and k.shape == v.shape
         and q.shape[-1] == k.shape[-1]
         and q.shape[-1] in (64, 128)
@@ -146,7 +148,7 @@ def sol3_attention(
         raise ValueError("Conditioning length exceeds query length")
     start = 0 if prefix_tokens else tq - suffix_tokens
     qh, kh, vh = [x.transpose(1, 2) for x in (q, k, v)]
-    if not _eligible(qh, kh, vh) or q.shape != k.shape or tq < 1024 or length == tq:
+    if not _eligible(qh, kh, vh, grouped=True) or tq != k.size(1) or tq < 1024 or length == tq:
         if precision == "fp4":
             raise ValueError("FP4 requires eligible Blackwell BF16 self-attention")
         return dense_attention(qh, kh, vh, scale=scale).transpose(1, 2)
@@ -176,14 +178,22 @@ def sol3_attention(
             if precision == "fp4":
                 raise ValueError("FP4 requires the SM120 packed CUDA kernel")
             engine = _backend(q.device, backend)
-            for h in range(0, q.size(2), 4):
-                x, y, z = (t[b, h : h + 4].to(torch.float16).contiguous() for t in (qh, kh, vh))
-                bits, kc, vc = sol_route(x, y, z, scale, tau, start, length, engine)
-                exact = round_up(tq, 64)
+            ratio = q.size(2) // k.size(2)
+            exact = round_up(tq, 64)
+            for h in range(0, k.size(2), 4):
+                stop = min(k.size(2), h + 4)
+                y, z = (t[b, h:stop].to(torch.float16).contiguous() for t in (kh, vh))
+                kc, vc, kvar, disp = prepare_sol_kv(y, z)
                 kbuf = torch.cat((pad(y, exact), pad(kc, round_up(kc.size(1), 64))), 1)
                 vbuf = torch.cat((pad(z, exact), pad(vc, round_up(vc.size(1), 64))), 1)
-                output = _execute(engine, x, kbuf, vbuf, bits, tq, 64, scale, True, False)
-                result[b, :, h : h + 4].copy_(output.transpose(0, 1))
+                ki, ks = engine.pack(kbuf)
+                for lane in range(ratio):
+                    heads = slice(h * ratio + lane, stop * ratio, ratio)
+                    x = qh[b, heads].to(torch.float16).contiguous()
+                    bits = route_queries(x, y, kc, kvar, disp, scale, tau, start, length, engine)
+                    qi, qs = engine.pack(pad(x, exact))
+                    output = engine.attend(qi, ki, vbuf, qs, ks, bits, tq, 64, scale, True, False)
+                    result[b, :, heads].copy_(output[:, :tq].transpose(0, 1))
         if length:
             result[:, start : start + length].copy_(
                 dense_attention(qh[:, :, start : start + length], kh, vh, scale=scale).transpose(1, 2)
