@@ -1,9 +1,9 @@
 # Copyright (c) 2026 DeepBeepMeep - part of WanGP, WanGP Community License 2.0 (see LICENSE.txt)
-"""Rebuild the PTX images of the Sol attention kernels (ptx/) from sol_attn.cu and sol_pack.cu with PyTorch's NVRTC.
+"""Assemble packed Sol attention, packing and routing machine images at build time.
 
-python build.py
-The images are compiled by the driver when they are loaded: sm_89 images run on newer GPUs too, sm_120a images need a
-GeForce RTX 50xx."""
+Pass --regenerate-ptx to rebuild the Sol CUDA intermediates with NVRTC before assembly.
+The wheel contains architecture-specific cubins for direct driver loading.
+"""
 from pathlib import Path
 
 import torch
@@ -33,4 +33,23 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    import shutil
+    import subprocess
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--regenerate-ptx", action="store_true", help="Regenerate Sol PTX from the CUDA sources before assembly")
+    parser.add_argument("--ptxas",default="ptxas")
+    args = parser.parse_args()
+    if args.regenerate_ptx:
+        main()
+    folder = HERE / "images"
+    folder.mkdir(exist_ok=True)
+    for source in sorted((HERE/"ptx").glob("*.ptx")):
+        name = source.stem
+        arch = "sm_120a" if "120" in name else "sm_89"
+        for target in ((arch,"sm_120a") if name=="pack_sm89" else (arch,)):
+            output = "pack_sm120a" if name=="pack_sm89" and target=="sm_120a" else name
+            subprocess.run([args.ptxas, "-arch="+target, str(source), "-o", str(folder/(output+".cubin"))], check=True)
+    for manifest in (HERE/"ptx").glob("route_*.json"):
+        shutil.copyfile(manifest,folder/manifest.name)

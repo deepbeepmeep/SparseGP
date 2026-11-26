@@ -204,6 +204,7 @@ def sparge_attention(
     backend="auto",
     dropout_p=0.0,
     smooth_k=True,
+    pv_threshold=50.,
 ):
     """HND block-sparse attention with an explicit [B,H,query blocks,key blocks] keep-map."""
     if block_map is None:
@@ -232,11 +233,29 @@ def sparge_attention(
     out = torch.empty_like(q, memory_format=torch.contiguous_format)
     with torch.cuda.device(q.device):
         engine = _backend(q.device, backend)
+        if engine is native:
+            from . import sparge_cuda
+            settings = sparge_cuda.settings(q.device,d,(mq,64) if mq==128 else (mq,mk))
+            if settings is not None:
+                cfg = dict(settings, smooth_k=smooth_k, causal=causal, scale=scale, pv_threshold=pv_threshold)
+                keep = block_map if mk==64 or settings["hopper"] else block_map.repeat_interleave(2,-1)[..., :(tk+63)//64]
+                values = sparge_cuda.staged_quantize_v([v.transpose(1,2)], cfg)
+                keys = sparge_cuda.staged_quantize_k([k.transpose(1,2)], cfg)
+                query = sparge_cuda.staged_quantize_q(q.transpose(1,2), cfg)
+                sparge_cuda.staged_attention(out.transpose(1,2), [query,keys,values], cfg, keep)
+                return out
         for batch in range(b):
             for head in range(0, h, 8):
                 x, y, z = (t[batch, head : head + 8].to(torch.float16).contiguous() for t in (q, k, v))
                 if smooth_k:
                     y = y - y.mean(1, keepdim=True)
+                if engine is native:
+                    query,qs = engine.pack(pad(x,round_up(tq,64)))
+                    key,ks = engine.pack(pad(y,round_up(tk,64)))
+                    keep = block_map[batch:batch+1,head:head+8]
+                    value = engine.attend_blocks(query,key,pad(z,round_up(tk,64)),qs,ks,keep,tk,mq,mk,scale,causal)
+                    out[batch,head:head+8].copy_(value[:,:tq])
+                    continue
                 keep = block_map[batch, head : head + 8].repeat_interleave(mk // 64, -1)[..., : (tk + 63) // 64]
                 # A Sparge tile always includes every valid key or none. Tail keys
                 # are bounded independently by the attention kernel.
@@ -271,7 +290,7 @@ def block_sparse_sage2_attn_cuda(
     if tensor_layout == "NHD":
         q, k, v = (t.transpose(1, 2) for t in (q, k, v))
     out = sparge_attention(
-        q, k, v, mask_id, block_size=block_size, scale=scale, dropout_p=dropout_p, smooth_k=smooth_k
+        q, k, v, mask_id, block_size=block_size, scale=scale, dropout_p=dropout_p, smooth_k=smooth_k, pv_threshold=pvthreshd
     )
     if tensor_layout == "NHD":
         out = out.transpose(1, 2)

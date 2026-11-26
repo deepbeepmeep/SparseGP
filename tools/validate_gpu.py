@@ -6,7 +6,7 @@ import statistics
 import torch
 from torch.nn import functional as F
 
-from sparsegp import backend_for, dense_attention, sol3_attention, sparge_attention
+from sparsegp import sparge_cuda, backend_for, dense_attention, sol3_attention, sparge_attention
 from sparsegp.core import _backend
 from sparsegp.native import target
 from sparsegp.routing import sol_route
@@ -57,7 +57,21 @@ def validate(device, backend):
     visible = mask[:, :, qm // 128, km // 64] & (km <= qm)
     reference = F.scaled_dot_product_attention(a.float(), b.float(), c.float(), attn_mask=visible)
     block_error = (o - reference).norm() / reference.norm().clamp_min(1.0e-10)
-    assert torch.isfinite(o).all() and block_error < 0.025
+    # Upstream FP8 weights both the values and the softmax probabilities (about 4% RMS on random inputs).
+    fp8_sparge = backend == "cuda" and bool((sparge_cuda.settings(device, d) or {}).get("fp8"))
+    assert torch.isfinite(o).all() and block_error < (0.055 if fp8_sparge else 0.025), (backend, float(block_error))
+    assert not torch.count_nonzero(o[~visible.any(-1)])
+
+    # Replay with changed projections and a different set of visible blocks.
+    graph = torch.cuda.CUDAGraph()
+    with torch.cuda.graph(graph):
+        captured_sparse = sparge_attention(a, b, c, mask, backend=backend, causal=True)
+    a.neg_()
+    mask.logical_not_()
+    expected_sparse = sparge_attention(a, b, c, mask, backend=backend, causal=True)
+    graph.replay()
+    torch.testing.assert_close(captured_sparse, expected_sparse, rtol=0, atol=0)
+
     dense = spas_sage2_attn_meansim_topk_cuda(a, b, c, topk=1.0)
     torch.testing.assert_close(dense, dense_attention(a, b, c))
     if backend == backend_for(device):
@@ -119,7 +133,7 @@ def validate_packed(device):
     got = got.contiguous().view(torch.int32).reshape_as(expected_bits)
     disagreement = (((got ^ expected_bits).unsqueeze(-1) >> lanes) & 1).float().mean()
     assert disagreement < 0.025, ("packed routing bit disagreement", float(disagreement))
-    print(f"{target(device)} packed routing bit disagreement against portable reference: {float(disagreement):.5f}")
+    print(f"{target(device)} packed routing bit disagreement against the compiled mixed-block reference: {float(disagreement):.5f}")
     expected = F.scaled_dot_product_attention(*(x.transpose(1, 2).float() for x in (q, k, v))).transpose(1, 2)
     for precision in ("int8", "fp4") if target(device) == "sm_120" else ("int8",):
         full = sol3_attention(q, k, v, tau=-1.0e6, precision=precision).float()

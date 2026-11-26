@@ -1,4 +1,4 @@
-"""Build the packed BF16 router with Triton 3.6. The wheel loads its PTX directly."""
+"""Build the packed BF16 router with Triton 3.6. packed_cuda/build.py assembles these build intermediates into the release cubins."""
 
 import argparse
 import importlib.util

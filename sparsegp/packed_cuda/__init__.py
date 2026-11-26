@@ -23,16 +23,7 @@ BLOCK, GROUP, DIM = 64, 16, 128
 _K8_RECORD, _K4_RECORD, _C_RECORD = 16640, 12816, 6208                    # as in the kernels
 _SHARED = {False: 2 * _K8_RECORD + _C_RECORD + 8480, True: 2 * _K4_RECORD + _C_RECORD + 8480}
 _MAX_LAUNCH = 1 << 37  # query x key pairs of one launch: bounds the time of one driver submission
-_PTX = Path(__file__).with_name("ptx")
-
-
-@lru_cache(None)
-def _supports_images(index):
-    # The packed kernels ship PTX 9.0. Earlier drivers can still load the portable cubins.
-    from ..native import module
-    driver = module(torch.device("cuda", index)).driver
-    version = ctypes.c_int()
-    return driver.cuDriverGetVersion(ctypes.byref(version)) == 0 and version.value >= 13000
+_IMAGES = Path(__file__).with_name("images")
 
 
 @lru_cache(None)
@@ -44,8 +35,7 @@ def supported(device, dtype=torch.bfloat16):
     """Packed BF16-input kernels on Ada and GeForce Blackwell, outside autograd and compilation."""
     index = device.index if device.index is not None else (torch.cuda.current_device() if device.type == "cuda" else None)
     return (device.type == "cuda" and torch.version.hip is None and dtype == torch.bfloat16
-            and hasattr(getattr(torch.cuda, "_utils", None), "_cuda_load_module")
-            and _capability(index) in ((8, 9), (12, 0)) and _supports_images(index)
+            and _capability(index) in ((8, 9), (12, 0))
             and not torch.is_grad_enabled() and not torch.compiler.is_compiling())
 
 
@@ -60,8 +50,19 @@ def usable(q, k, v):
 
 @lru_cache(None)
 def _kernels(device_index, image, names):
-    with torch.cuda.device(device_index):
-        return torch.cuda._utils._cuda_load_module((_PTX / f"{image}.ptx").read_bytes(), list(names))
+    from .. import native
+    device = torch.device("cuda", device_index)
+    if image == "pack_sm89" and _capability(device_index) == (12,0):
+        image = "pack_sm120a"
+    module = native.load_image(device, _IMAGES / f"{image}.cubin")
+    def launcher(name):
+        module.function(name)
+        def launch(grid, block, args, *, stream, shared_mem=0):
+            # Both the Sol CUDA ABI and the AOT router take their floating-point scalars as doubles.
+            values = [ctypes.c_double(v) if isinstance(v, float) else v for v in args]
+            module.launch(name, grid, block, values, device, shared_mem)
+        return launch
+    return {name:launcher(name) for name in names}
 
 
 def allocate(tokens, heads, device, *, fp4=False, mixed=False):

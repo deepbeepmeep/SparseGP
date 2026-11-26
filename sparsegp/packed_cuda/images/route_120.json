@@ -1,0 +1,37 @@
+{
+  "query": [
+    "_pool",
+    2048,
+    2
+  ],
+  "key": [
+    "_pool",
+    2048,
+    2
+  ],
+  "value": [
+    "_pool",
+    2048,
+    2
+  ],
+  "classify": [
+    "_classify",
+    16384,
+    2
+  ],
+  "moments": [
+    "_tokens",
+    16384,
+    2
+  ],
+  "select": [
+    "_tokens",
+    16384,
+    2
+  ],
+  "cut": [
+    "_cut",
+    16,
+    2
+  ]
+}

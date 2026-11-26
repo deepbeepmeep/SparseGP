@@ -41,7 +41,12 @@
 
 template<uint32_t CTA_Q, uint32_t CTA_K, uint32_t WARP_Q, uint32_t WARP_K, uint32_t head_dim, DataType DTypeQK, QuantGranularity Q_GRAN, QuantGranularity K_GRAN,
         bool use_inst_buffer = false, PVThresholdMode pv_threashold_mode, typename DTypeOut = half, ComputeUnit DenominatorAccumUnit, MaskMode mask_mode = MaskMode::kNone, bool return_pv_count = false>
-__global__ void qk_int_sv_f16_block_sparse_attn_kernel(int8_t *__restrict__ Q, int8_t *__restrict__ K, half *__restrict__ V, DTypeOut *__restrict__ O, int32_t *__restrict__ PV_Count, int32_t *__restrict__ Lut, int32_t *__restrict__ Valid_Block_Num, float *__restrict__ PV_Threshold,
+#ifdef SPARSEGP_DEVICE_ABI
+__device__ __forceinline__
+#else
+__global__
+#endif
+void qk_int_sv_f16_block_sparse_attn_kernel(int8_t *__restrict__ Q, int8_t *__restrict__ K, half *__restrict__ V, DTypeOut *__restrict__ O, int32_t *__restrict__ PV_Count, int32_t *__restrict__ Lut, int32_t *__restrict__ Valid_Block_Num, float *__restrict__ PV_Threshold,
                       float *__restrict__ Q_scale, float *__restrict__ K_scale,
                       const uint32_t qo_len, const uint32_t kv_len, const uint32_t num_kv_groups,
                       const uint32_t stride_bz_q, const uint32_t stride_seq_q, const uint32_t stride_h_q,
@@ -670,6 +675,8 @@ __global__ void qk_int_sv_f16_block_sparse_attn_kernel(int8_t *__restrict__ Q, i
 }
 
 
+#ifndef SPARSEGP_DEVICE_ABI
+
 template<uint32_t CTA_Q, uint32_t CTA_K, uint32_t WARP_Q, uint32_t WARP_K, uint32_t head_dim, uint32_t qk_quant_gran, typename DTypePVAccum, bool use_inst_buffer, uint32_t pv_threashold_mode, typename DTypeOut, bool is_causal, bool return_pv_count>
 void SpargeAttentionSM80Dispatched(
   int8_t* Q, int8_t* K, half* V, DTypeOut* O,
@@ -715,3 +722,4 @@ void SpargeAttentionSM80Dispatched(
     stride_bz_o, stride_seq_o, stride_h_o,
     sm_scale);
 }
+#endif

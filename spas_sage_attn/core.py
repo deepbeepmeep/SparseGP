@@ -32,6 +32,7 @@ def _meansim(
     cdfthreshd,
     topk,
     attention_sink,
+    pvthreshd,
     tensor_layout,
     return_sparsity,
 ):
@@ -47,7 +48,8 @@ def _meansim(
         out = dense_attention(q, k, v, causal=is_causal, scale=scale, mask=attn_mask, dropout_p=dropout_p)
         sparsity = 0.0
     else:
-        mq, mk = 128, 64
+        hopper = q.is_cuda and not torch.version.hip and torch.cuda.get_device_capability(q.device) == (9, 0)
+        mq, mk = (64, 128) if hopper else (128, 64)
         qm, qs = _pool(q, mq)
         km, ks = _pool(k - k.mean(2, keepdim=True) if smooth_k else k, mk)
         if q.size(1) != k.size(1):
@@ -85,6 +87,7 @@ def _meansim(
             causal=is_causal,
             dropout_p=dropout_p,
             smooth_k=smooth_k,
+            pv_threshold=pvthreshd,
         )
         if return_sparsity:
             sparsity = 1.0 - keep.sum().item() / (q.size(0) * q.size(1) * allowed.sum().item())
@@ -123,6 +126,7 @@ def spas_sage2_attn_meansim_cuda(
         cdfthreshd,
         None,
         attention_sink,
+        pvthreshd,
         tensor_layout,
         return_sparsity,
     )
@@ -159,6 +163,7 @@ def spas_sage2_attn_meansim_topk_cuda(
         cdfthreshd,
         topk,
         attention_sink,
+        pvthreshd,
         tensor_layout,
         return_sparsity,
     )

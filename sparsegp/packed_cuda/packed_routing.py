@@ -4,17 +4,15 @@
 from functools import lru_cache
 import json
 import torch
-from . import _PTX, _kernels
+from . import _IMAGES, _kernels
 
 
 @lru_cache(None)
 def _kernel(index, name):
     major, minor = torch.cuda.get_device_capability(index)
     arch = major * 10 + minor
-    entry, shared, scratch = json.loads((_PTX / f"route_{arch}.json").read_text())[name]
+    entry, shared, scratch = json.loads((_IMAGES / f"route_{arch}.json").read_text())[name]
     kernel = _kernels(index, f"route_{arch}_{name}", (entry,))[entry]
-    if shared >= 49152:
-        kernel.set_shared_memory_config(shared)
     return kernel, shared, scratch
 
 

@@ -27,15 +27,17 @@ def _attend(
     KS,
     BITS,
     O,
-    QP: tl.constexpr,
-    KP: tl.constexpr,
-    KEYS: tl.constexpr,
-    QB: tl.constexpr,
-    SCALE: tl.constexpr,
+    QP,
+    KP,
+    KEYS,
+    QB,
+    SCALE,
     REPS: tl.constexpr,
     CAUSAL: tl.constexpr,
     D: tl.constexpr,
     M: tl.constexpr,
+    WHOLE: tl.constexpr = False,
+    Counts=None,
 ):
     g = tl.program_id(1).to(tl.int64)
     tile = tl.program_id(0)
@@ -49,24 +51,30 @@ def _attend(
     maximum = tl.full((M,), -float("inf"), tl.float32)
     denom = tl.full((M,), 0, tl.float32)
     num = tl.full((M, D), 0, tl.float32)
-    for t in range(nk + (tl.cdiv(nk, 64) if REPS else 0)):
+    list_row = g * tl.cdiv(QP, QB) + (tile * M) // QB
+    iters = tl.load(Counts + list_row) if WHOLE else nk + (tl.cdiv(nk, 64) if REPS else 0)
+    for visit in range(iters):
+        t = tl.load(BITS + list_row * nk + visit) if WHOLE else visit
         col = t * 64 + c
-        rep = t >= nk
-        if rep:
-            j = col - nk * 64
-            lo = tl.load(base + 2 * j, j < nk, 0).to(tl.uint32)
-            hi = tl.load(base + 2 * j + 1, j < nk, 0).to(tl.uint32)
-            # Portable SWAR popcount, lowered to native bit-count instructions.
-            a = lo - ((lo >> 1) & 0x55555555)
-            b = hi - ((hi >> 1) & 0x55555555)
-            a = (a & 0x33333333) + ((a >> 2) & 0x33333333)
-            b = (b & 0x33333333) + ((b >> 2) & 0x33333333)
-            a = ((((a + (a >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24) & 255
-            b = ((((b + (b >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24) & 255
-            mass = tl.where(j < nk, tl.minimum(64, KEYS - j * 64) - a.to(tl.int32) - b.to(tl.int32), 0)
+        if WHOLE:
+            mass = (col < KEYS).to(tl.int32)
         else:
-            bits = tl.load(base + t * 2 + c // 32).to(tl.uint32)
-            mass = ((bits >> (c % 32)) & 1).to(tl.int32) * (col < KEYS)
+            rep = t >= nk
+            if rep:
+                j = col - nk * 64
+                lo = tl.load(base + 2 * j, j < nk, 0).to(tl.uint32)
+                hi = tl.load(base + 2 * j + 1, j < nk, 0).to(tl.uint32)
+                # Portable SWAR popcount, lowered to native bit-count instructions.
+                a = lo - ((lo >> 1) & 0x55555555)
+                b = hi - ((hi >> 1) & 0x55555555)
+                a = (a & 0x33333333) + ((a >> 2) & 0x33333333)
+                b = (b & 0x33333333) + ((b >> 2) & 0x33333333)
+                a = ((((a + (a >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24) & 255
+                b = ((((b + (b >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24) & 255
+                mass = tl.where(j < nk, tl.minimum(64, KEYS - j * 64) - a.to(tl.int32) - b.to(tl.int32), 0)
+            else:
+                bits = tl.load(base + t * 2 + c // 32).to(tl.uint32)
+                mass = ((bits >> (c % 32)) & 1).to(tl.int32) * (col < KEYS)
         if tl.max(mass, 0) > 0:
             k = tl.load(K + ((g * KP + col[:, None]) * D + d[None, :]), col[:, None] < KP, 0)
             v = tl.load(V + ((g * KP + col[:, None]) * D + d[None, :]), col[:, None] < KP, 0)
@@ -116,15 +124,17 @@ def _attend_dp4a(
     KS,
     BITS,
     O,
-    QP: tl.constexpr,
-    KP: tl.constexpr,
-    T: tl.constexpr,
-    QB: tl.constexpr,
-    SCALE: tl.constexpr,
+    QP,
+    KP,
+    T,
+    QB,
+    SCALE,
     REPS: tl.constexpr,
     CAUSAL: tl.constexpr,
     D: tl.constexpr,
     HIP: tl.constexpr,
+    WHOLE: tl.constexpr = False,
+    Counts=None,
 ):
     row, g = tl.program_id(0), tl.program_id(1).to(tl.int64)
     nk = tl.cdiv(T, 64)
@@ -137,28 +147,34 @@ def _attend_dp4a(
     maximum = -float("inf")
     denom = 0.0
     num = tl.full((D,), 0.0, tl.float32)
-    for tile in range(nk + (tl.cdiv(nk, 64) if REPS else 0)):
+    list_row = g * tl.cdiv(QP, QB) + (row) // QB
+    iters = tl.load(Counts + list_row) if WHOLE else nk + (tl.cdiv(nk, 64) if REPS else 0)
+    for visit in range(iters):
+        tile = tl.load(BITS + list_row * nk + visit) if WHOLE else visit
         col = tile * 64 + c
-        if tile < nk:
-            word = tl.load(bits + tile * 2 + c // 32).to(tl.uint32)
-            mass = (((word >> (c % 32)) & 1).to(tl.int32)) * (col < T)
+        if WHOLE:
+            mass = (col < T).to(tl.int32)
         else:
-            j = col - nk * 64
-            lo = tl.load(bits + 2 * j, j < nk, 0)
-            hi = tl.load(bits + 2 * j + 1, j < nk, 0)
-            if HIP:
-                used = tl.inline_asm_elementwise(
-                    "v_bcnt_u32_b32 $0, $1, 0", "=v,v", [lo], dtype=tl.int32, is_pure=True, pack=1
-                ) + tl.inline_asm_elementwise(
-                    "v_bcnt_u32_b32 $0, $1, 0", "=v,v", [hi], dtype=tl.int32, is_pure=True, pack=1
-                )
+            if tile < nk:
+                word = tl.load(bits + tile * 2 + c // 32).to(tl.uint32)
+                mass = (((word >> (c % 32)) & 1).to(tl.int32)) * (col < T)
             else:
-                used = tl.inline_asm_elementwise(
-                    "popc.b32 $0, $1;", "=r,r", [lo], dtype=tl.int32, is_pure=True, pack=1
-                ) + tl.inline_asm_elementwise(
-                    "popc.b32 $0, $1;", "=r,r", [hi], dtype=tl.int32, is_pure=True, pack=1
-                )
-            mass = tl.where(j < nk, tl.minimum(64, T - j * 64) - used, 0)
+                j = col - nk * 64
+                lo = tl.load(bits + 2 * j, j < nk, 0)
+                hi = tl.load(bits + 2 * j + 1, j < nk, 0)
+                if HIP:
+                    used = tl.inline_asm_elementwise(
+                        "v_bcnt_u32_b32 $0, $1, 0", "=v,v", [lo], dtype=tl.int32, is_pure=True, pack=1
+                    ) + tl.inline_asm_elementwise(
+                        "v_bcnt_u32_b32 $0, $1, 0", "=v,v", [hi], dtype=tl.int32, is_pure=True, pack=1
+                    )
+                else:
+                    used = tl.inline_asm_elementwise(
+                        "popc.b32 $0, $1;", "=r,r", [lo], dtype=tl.int32, is_pure=True, pack=1
+                    ) + tl.inline_asm_elementwise(
+                        "popc.b32 $0, $1;", "=r,r", [hi], dtype=tl.int32, is_pure=True, pack=1
+                    )
+                mass = tl.where(j < nk, tl.minimum(64, T - j * 64) - used, 0)
         if CAUSAL:
             mass = tl.where(col <= row, mass, 0)
         if tl.max(mass, 0) > 0:
@@ -244,10 +260,10 @@ def _select(
     STATS,
     CUT,
     BITS,
-    N: tl.constexpr,
-    T: tl.constexpr,
+    N,
+    T,
     D: tl.constexpr,
-    SCALE: tl.constexpr,
+    SCALE,
     WRITE: tl.constexpr,
 ):
     tile, kb, group = tl.program_id(0), tl.program_id(1), tl.program_id(2).to(tl.int64)
@@ -285,10 +301,10 @@ def _select_simt(
     STATS,
     CUT,
     BITS,
-    N: tl.constexpr,
-    T: tl.constexpr,
+    N,
+    T,
     D: tl.constexpr,
-    SCALE: tl.constexpr,
+    SCALE,
     WRITE: tl.constexpr,
 ):
     row, kb, g = tl.program_id(0), tl.program_id(1), tl.program_id(2).to(tl.int64)

@@ -174,9 +174,13 @@ __device__ __forceinline__ void arrive(uint64_t* bar){
 #endif
 
 template<uint32_t CTA_Q, uint32_t CTA_K, uint32_t NUM_THREADS, uint32_t head_dim, QuantGranularity Q_GRAN, QuantGranularity K_GRAN, PVThresholdMode pv_threashold_mode, typename DTypeOut, MaskMode mask_mode = MaskMode::kNone, bool fuse_v_scale = false, bool return_pv_count = false>
+#ifdef SPARSEGP_DEVICE_ABI
+__device__ __forceinline__ void qk_int8_sv_f8_attn_kernel(const CUtensorMap& tensorMapQ, const CUtensorMap& tensorMapK, const CUtensorMap& tensorMapV,
+#else
 __global__ void qk_int8_sv_f8_attn_kernel(const __grid_constant__ CUtensorMap tensorMapQ, 
                                         const __grid_constant__ CUtensorMap tensorMapK,
                                         const __grid_constant__ CUtensorMap tensorMapV,
+#endif
                                         float *__restrict__ Q_scale, float *__restrict__ K_scale, float *__restrict__ V_scale,
                                         DTypeOut* O, int32_t *__restrict__ PV_Count, int32_t *__restrict__ Lut, int32_t *__restrict__ Valid_Block_Num, float *__restrict__ PV_Threshold,
                                         uint32_t stride_bz_o, uint32_t stride_h_o, uint32_t stride_seq_o,

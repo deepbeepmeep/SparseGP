@@ -1,12 +1,17 @@
 """Sparge projection staging for WanGP. Map geometry is 128 query rows and 64 key rows."""
 
 import torch
+from . import sparge_cuda
 from .core import _backend, backend_for
 from .routing import pad, round_up
 
 
 def staged_settings(device, head_dim):
-    return {"block_q": 128, "block_k": 64} if head_dim in (64, 128) and backend_for(device) else None
+    backend = backend_for(device)
+    if head_dim not in (64, 128) or not backend:
+        return None
+    cfg = sparge_cuda.settings(device, head_dim) if backend == "cuda" else None
+    return {"block_q": 128, "block_k": 64, **(cfg or {})}
 
 
 def _rows(x):
@@ -15,11 +20,15 @@ def _rows(x):
 
 
 def staged_quantize_q(q, settings):
+    if "image" in settings:
+        return sparge_cuda.staged_quantize_q(q, settings)
     with torch.cuda.device(q.device):
         return _backend(q.device, "auto").pack(pad(_rows(q), round_up(q.size(1), 64)))
 
 
 def staged_quantize_k(k_list, settings):
+    if "image" in settings:
+        return sparge_cuda.staged_quantize_k(k_list, settings)
     k = k_list.pop()
     tokens = k.size(1)
     with torch.cuda.device(k.device):
@@ -29,19 +38,30 @@ def staged_quantize_k(k_list, settings):
 
 
 def staged_quantize_v(v_list, settings):
+    if "image" in settings:
+        return sparge_cuda.staged_quantize_v(v_list, settings)
     v = v_list.pop()
     return pad(_rows(v), round_up(v.size(1), 64))
 
 
 def staged_attention(out, quantized_list, settings, attn_mask=None):
+    if "image" in settings:
+        return sparge_cuda.staged_attention(out, quantized_list, settings, attn_mask)
     (q, qs), (k, ks, keys), v = quantized_list
     quantized_list.clear()
     b, t, h, d = out.shape
     keep = attn_mask.expand(b, h, (t + 127) // 128, (keys + 63) // 64).reshape(
         b * h, (t + 127) // 128, (keys + 63) // 64
     )
+    engine = _backend(out.device, "auto")
+    if hasattr(engine, "attend_blocks"):
+        result = engine.attend_blocks(
+            q, k, v, qs, ks, keep.view(b, h, *keep.shape[-2:]), keys, 128, 64, d**-0.5, settings.get("causal", False)
+        )
+        out.copy_(result[:, :t].view(b, h, t, d).transpose(1, 2))
+        return out
     bits = (-keep.bool().int()).unsqueeze(-1).expand(*keep.shape, 2).contiguous()
     with torch.cuda.device(out.device):
-        value = _backend(out.device, "auto").attend(q, k, v, qs, ks, bits, keys, 128, d**-0.5, False, False)
+        value = engine.attend(q, k, v, qs, ks, bits, keys, 128, d**-0.5, False, settings.get("causal", False))
     out.copy_(value[:, :t].view(b, h, t, d).transpose(1, 2))
     return out

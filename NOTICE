@@ -2,12 +2,12 @@ SparseGP is a fork of SpargeAttention by the SpargeAttn team.
 Original repository: https://github.com/thu-ml/SpargeAttn
 The Sol³ routing method is by Guoxin Fan and coauthors.
 Original repository: https://github.com/FofGofx/sol3
-The packed CUDA code in sparsegp/packed_cuda is from WanGP by DeepBeepMeep,
+The packed CUDA code in sparsegp/packed_cuda and projection packing in sparsegp/csrc/prepare.py are from WanGP by DeepBeepMeep,
 using the Sol-Attn routing of NVIDIA's Sana project. Its original license
 is included at sparsegp/packed_cuda/LICENSE.txt. The SpargeAttention fork
-and the portable SparseGP kernels are distributed under the Apache License 2.0.
+and the other SparseGP device kernels are distributed under the Apache License 2.0.
 
-The HIP device images incorporate header code from AMD rocWMMA.
+The previous release used AMD rocWMMA under the following notice.
 
 MIT License
 Copyright (C) 2021-2025 Advanced Micro Devices, Inc. All rights reserved.

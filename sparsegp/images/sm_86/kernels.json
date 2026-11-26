@@ -1,0 +1,172 @@
+{
+  "pack64": [
+    "_pack",
+    128,
+    128
+  ],
+  "attend64_00": [
+    "_attend",
+    12288,
+    128
+  ],
+  "attend64_01": [
+    "_attend",
+    12288,
+    128
+  ],
+  "attend64_10": [
+    "_attend",
+    12288,
+    128
+  ],
+  "attend64_11": [
+    "_attend",
+    12288,
+    128
+  ],
+  "sparge64_0": [
+    "_attend",
+    12288,
+    128
+  ],
+  "sparge64_1": [
+    "_attend",
+    12288,
+    128
+  ],
+  "select64_0": [
+    "_select",
+    10240,
+    128
+  ],
+  "select64_1": [
+    "_select",
+    10240,
+    128
+  ],
+  "q_64_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "k_64_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "kraw_64_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "q_64_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "k_64_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "kraw_64_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "pack128": [
+    "_pack",
+    256,
+    128
+  ],
+  "attend128_00": [
+    "_attend",
+    24576,
+    128
+  ],
+  "attend128_01": [
+    "_attend",
+    24576,
+    128
+  ],
+  "attend128_10": [
+    "_attend",
+    24576,
+    128
+  ],
+  "attend128_11": [
+    "_attend",
+    24576,
+    128
+  ],
+  "sparge128_0": [
+    "_attend",
+    24576,
+    128
+  ],
+  "sparge128_1": [
+    "_attend",
+    24576,
+    128
+  ],
+  "select128_0": [
+    "_select",
+    12288,
+    128
+  ],
+  "select128_1": [
+    "_select",
+    12288,
+    128
+  ],
+  "q_128_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "k_128_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "kraw_128_fp16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "q_128_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "k_128_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "kraw_128_bf16": [
+    "_quant_block_nhd",
+    16,
+    128
+  ],
+  "indices0": [
+    "_lookup",
+    32,
+    128
+  ],
+  "lut0": [
+    "_lookup",
+    1024,
+    128
+  ],
+  "indices1": [
+    "_lookup",
+    32,
+    128
+  ],
+  "lut1": [
+    "_lookup",
+    1024,
+    128
+  ]
+}
